@@ -11,15 +11,24 @@ import org.apache.commons.logging.LogFactory;
 public class MyEventHandler2 extends EventHandlerN {
     private static Log log = LogFactory.getLog(MyEventHandler2.class);
 
+
     @Override
-    public void deal(JSONObject data) {
+    public void deal(String eventName, JSONObject data) {
+        log.debug(eventName + " trigger me {" + getEventHandlerID() + "}");
         log.debug(data);
     }
 
-    public MyEventHandler2(Integer execCount) {
-        super(execCount);
+
+    public MyEventHandler2(long id, String desc, Integer execCount) {
+        super(id, desc, execCount);
     }
 
-    public MyEventHandler2() {
+    public MyEventHandler2(long id) {
+        super(id);
+    }
+
+    public MyEventHandler2(long id, Integer execCount) {
+        super(id, execCount);
+
     }
 }

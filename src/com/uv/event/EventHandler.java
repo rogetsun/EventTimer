@@ -14,21 +14,29 @@ public interface EventHandler {
      *
      * @param data
      */
-    public void deal(JSONObject data);
+//    void deal(JSONObject data);
+
+    /**
+     * 用指定事件名称执行事件处理器逻辑
+     *
+     * @param eventName
+     * @param data
+     */
+    void deal(String eventName, JSONObject data);
 
     /**
      * 设置事件处理器所在的事件容器对象引用
      *
      * @param eventEmitter
      */
-    public void setEventEmitter(EventEmitter eventEmitter);
+    void setEventEmitter(EventEmitter eventEmitter);
 
     /**
      * 获取事件容器引用
      *
      * @return
      */
-    public EventEmitter getEventEmitter();
+    EventEmitter getEventEmitter();
 
     /**
      * 判断本执行器是否可以执行,同时可以处理执行器属性数据
@@ -37,5 +45,48 @@ public interface EventHandler {
      * 1:表示可执行
      * <0:表示不可执行,直接移除
      */
-    public int canExecute();
+    int canExecute();
+
+    /**
+     * 设置触发此事件处理器的事件名称
+     *
+     * @param eventName
+     */
+    void setEventName(String eventName);
+
+    /**
+     * 获得触发此事件处理器的事件名称
+     *
+     * @return
+     */
+    String getEventName();
+
+
+    /**
+     * 设置事件处理器ID
+     *
+     * @param id
+     */
+    void setEventHandlerID(long id);
+
+    /**
+     * 设置事件处理器描述
+     *
+     * @param desc
+     */
+    void setEventHandlerDesc(String desc);
+
+    /**
+     * 获得事件处理器的ID
+     *
+     * @return
+     */
+    long getEventHandlerID();
+
+    /**
+     * 获得事件处理器描述
+     *
+     * @return
+     */
+    String getEventHandlerDesc();
 }

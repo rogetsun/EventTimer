@@ -22,10 +22,26 @@ public abstract class EventHandlerN extends EventHandlerS {
         }
     }
 
-    public EventHandlerN(Integer execCount) {
+//    public EventHandlerN(Integer execCount) {
+//        this.execCount = execCount;
+//    }
+
+
+    public EventHandlerN(long id, String desc) {
+        super(id, desc);
+    }
+
+    public EventHandlerN(long id, Integer execCount) {
+        super(id);
         this.execCount = execCount;
     }
 
-    public EventHandlerN() {
+    public EventHandlerN(long id) {
+        super(id);
+    }
+
+    public EventHandlerN(long id, String desc, Integer execCount) {
+        super(id, desc);
+        this.execCount = execCount;
     }
 }

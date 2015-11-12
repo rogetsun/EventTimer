@@ -18,9 +18,35 @@ import java.util.concurrent.Executors;
 public class EventExecutorImpl implements EventExecutor {
 
     private ExecutorService executorService;
+//
+//    @Override
+//    public void exec(final EventHandlerQueue<EventHandler> list, final JSONObject data) {
+//        Runnable runnable = new Runnable() {
+//            private Log log = LogFactory.getLog("");
+//
+//            @Override
+//            public void run() {
+//                for (Iterator<EventHandler> it = list.iterator(); it.hasNext(); ) {
+//                    EventHandler eh = it.next();
+//                    int lastCount = eh.canExecute();
+//                    if (lastCount <= 0) {
+//                        log.debug(eh.getEventName() + " remove eventHandler " + eh.getEventHandlerID());
+//                        it.remove();
+//                        if (lastCount == 0) eh.deal(data);
+//                    } else {
+//                        eh.deal(data);
+//                    }
+//
+//                }
+//
+//            }
+//        };
+//
+//        this.executorService.execute(runnable);
+//    }
 
     @Override
-    public void exec(final EventHandlerQueue<EventHandler> list, final JSONObject data) {
+    public void exec(final String eventName, final EventHandlerQueue<EventHandler> list, final JSONObject data) {
         Runnable runnable = new Runnable() {
             private Log log = LogFactory.getLog("");
 
@@ -30,10 +56,11 @@ public class EventExecutorImpl implements EventExecutor {
                     EventHandler eh = it.next();
                     int lastCount = eh.canExecute();
                     if (lastCount <= 0) {
+                        log.debug(eh.getEventName() + " remove eventHandler " + eh.getEventHandlerID());
                         it.remove();
-                        if (lastCount == 0) eh.deal(data);
+                        if (lastCount == 0) eh.deal(eventName, data);
                     } else {
-                        eh.deal(data);
+                        eh.deal(eventName, data);
                     }
 
                 }

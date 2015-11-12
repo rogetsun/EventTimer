@@ -11,8 +11,19 @@ import org.apache.commons.logging.LogFactory;
 public class MyEventHandler extends EventHandlerS {
     private static Log log = LogFactory.getLog(MyEventHandler.class);
 
+
     @Override
-    public void deal(JSONObject data) {
+    public void deal(String eventName, JSONObject data) {
+        log.debug(eventName + " trigger me {" + getEventHandlerID() + "}");
+        log.debug(data);
     }
 
+    public MyEventHandler(long id) {
+        super(id);
+    }
+
+    public MyEventHandler(long id, String desc) {
+
+        super(id, desc);
+    }
 }

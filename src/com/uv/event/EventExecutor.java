@@ -9,7 +9,18 @@ public interface EventExecutor {
     /**
      * 执行事件队列
      *
-     * @param list
+     * @param list 要执行的事件列表
+     * @param data 事件触发时携带的数据
      */
-    public void exec(EventHandlerQueue<EventHandler> list, JSONObject event);
+//    public void exec(EventHandlerQueue<EventHandler> list, JSONObject data);
+
+    /**
+     * 执行事件队列
+     *
+     * @param eventName 事件名称
+     * @param list      要执行的事件列表
+     * @param data      事件触发时携带的数据
+     */
+    public void exec(String eventName, EventHandlerQueue<EventHandler> list, JSONObject data);
+
 }
