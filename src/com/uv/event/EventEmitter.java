@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 public interface EventEmitter {
     /**
      * 注册监听指定事件名称的事件处理器
+     *
      * @param eventName
      * @param eventHandler
      */
@@ -15,12 +16,14 @@ public interface EventEmitter {
 
     /**
      * 移除事件
+     *
      * @param eventName
      */
     public void remove(String eventName);
 
     /**
      * 触发指定事件,并给入事件对象
+     *
      * @param eventName
      * @param data
      */

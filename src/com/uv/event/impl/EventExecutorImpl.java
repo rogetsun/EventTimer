@@ -2,10 +2,12 @@ package com.uv.event.impl;
 
 import com.uv.event.EventExecutor;
 import com.uv.event.EventHandler;
+import com.uv.event.EventHandlerQueue;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,30 +20,24 @@ public class EventExecutorImpl implements EventExecutor {
     private ExecutorService executorService;
 
     @Override
-    public void exec(List<EventHandler> list, JSONObject data) {
-        final UserData userData = new UserData(list, data);
+    public void exec(final EventHandlerQueue<EventHandler> list, final JSONObject data) {
         Runnable runnable = new Runnable() {
             private Log log = LogFactory.getLog("");
 
             @Override
             public void run() {
-                log.debug("begin to executor");
-                JSONObject data = userData.getData();
-                List<EventHandler> list = userData.getEventHandlerList();
-                for (EventHandler eh : list) {
-                    eh.deal(data);
-                    JSONObject jo = eh.getProperties();
-                    if (jo.containsKey("exec_count")) {
-                        int ec = jo.getInt("exec_count");
-                        jo.put("exec_count", --ec);
-                        if (ec <= 0) {
-                            log.debug("remove");
-                            userData.removeEventHandler(eh);
-                        }
+                for (Iterator<EventHandler> it = list.iterator(); it.hasNext(); ) {
+                    EventHandler eh = it.next();
+                    int lastCount = eh.canExecute();
+                    if (lastCount <= 0) {
+                        it.remove();
+                        if (lastCount == 0) eh.deal(data);
+                    } else {
+                        eh.deal(data);
                     }
+
                 }
 
-                log.debug("end executor");
             }
         };
 

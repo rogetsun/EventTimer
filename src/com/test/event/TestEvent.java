@@ -1,7 +1,8 @@
 package com.test.event;
 
 import com.uv.event.EventEmitter;
-import com.uv.event.impl.EventEmitterFactory;
+import com.uv.event.EventHandler;
+import com.uv.event.EventEmitterFactory;
 import com.uv.event.impl.EventExecutorImpl;
 import net.sf.json.JSONObject;
 
@@ -10,14 +11,20 @@ import net.sf.json.JSONObject;
  */
 public class TestEvent {
     public static void main(String[] args) throws InterruptedException {
-        MyEventHandler me = new MyEventHandler(JSONObject.fromObject("{exec_count:1}"));
+        EventHandler eh = new MyEventHandler2();
+        EventHandler eh2 = new MyEventHandler2(2);
 
         EventEmitter ee = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
 
-        ee.on("say", me);
+        ee.on("say", eh);
+        ee.on("say", eh2);
 
-        ee.trigger("say", JSONObject.fromObject("{name:'litx'}"));
-//        Thread.sleep(2000);
-        ee.trigger("say", JSONObject.fromObject("{name:'litx'}"));
+
+        for (int i = 0; i < 10; i++) {
+            JSONObject data = new JSONObject();
+            data.put("name", "litx" + i);
+            ee.trigger("say", data);
+            Thread.sleep(2);
+        }
     }
 }

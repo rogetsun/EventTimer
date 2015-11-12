@@ -1,7 +1,6 @@
-package com.uv.event.impl;
+package com.uv.event;
 
-import com.uv.event.EventEmitter;
-import com.uv.event.EventExecutor;
+import com.uv.event.impl.EventEmitterImpl;
 
 /**
  * Created by uv2sun on 15/11/10.
