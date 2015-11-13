@@ -14,19 +14,13 @@ public class Test {
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(4);
         TimerTask tt1 = new MyTimerTask(1);
         TimerTask tt2 = new MyTimerTask(2);
-        TimerTask tt3 = new MyTimerTask(3);
-        TimerTask tt4 = new MyTimerTask(4);
 
-        ScheduledFuture sf1 = ses.scheduleAtFixedRate(tt1, 1, 1, TimeUnit.SECONDS);
-        ScheduledFuture sf2 = ses.scheduleAtFixedRate(tt2, 1, 1, TimeUnit.SECONDS);
-        ScheduledFuture sf3 = ses.scheduleAtFixedRate(tt3, 1, 1, TimeUnit.SECONDS);
-        ScheduledFuture sf4 = ses.scheduleAtFixedRate(tt4, 1, 1, TimeUnit.SECONDS);
-
-        Thread.sleep(10000);
-        sf1.cancel(false);
-        sf2.cancel(false);
-        sf3.cancel(false);
-        sf4.cancel(false);
+        ScheduledFuture sf1 = ses.scheduleAtFixedRate(tt1, 2, 2, TimeUnit.SECONDS);
+        ScheduledFuture sf2 = ses.schedule(tt2, 1, TimeUnit.SECONDS);
+//        sf2.cancel(true);
+        Thread.sleep(2000);
+//        sf1.cancel(false);
+//        sf2.cancel(false);
 
 //        ses.scheduleAtFixedRate(new MyTimerTask(5), 1, 1, TimeUnit.SECONDS);
 
