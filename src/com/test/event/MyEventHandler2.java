@@ -15,6 +15,7 @@ public class MyEventHandler2 extends EventHandlerN {
     @Override
     public void deal(String eventName, JSONObject data) {
         log.debug(eventName + " trigger me {" + getEventHandlerID() + "}");
+        data.accumulate("handler", "handler2 deal");
         log.debug(data);
     }
 

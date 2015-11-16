@@ -4,6 +4,7 @@ import com.uv.event.EventEmitter;
 import com.uv.event.EventEmitterFactory;
 import com.uv.event.EventHandler;
 import com.uv.event.impl.EventExecutorImpl;
+import net.sf.json.JSONObject;
 
 /**
  * Created by uv2sun on 15/11/12.
@@ -20,7 +21,7 @@ public class TestEvent2 {
         ee.on("hello", eh2);
         ee.on("hello", eh);
 
-        ee.trigger("fuck you");
-        ee.trigger("hello");
+        ee.trigger("fuck you", new JSONObject());
+        ee.trigger("hello", new JSONObject());
     }
 }
