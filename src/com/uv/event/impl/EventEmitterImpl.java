@@ -2,6 +2,8 @@ package com.uv.event.impl;
 
 import com.uv.event.*;
 import net.sf.json.JSONObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +15,11 @@ import java.util.Map;
 public class EventEmitterImpl implements EventEmitter {
     private Map<String, EventHandlerQueue<EventHandler>> eventPool;
     private EventExecutor eventExecutor;
+    Log log = LogFactory.getLog(EventEmitterImpl.class);
 
     @Override
     public void on(String eventName, EventHandler eventHandler) {
+        log.debug("on " + eventName + ",EventHandlerID:" + eventHandler.getEventHandlerID());
         if (eventName != null && eventName.length() > 0 && eventHandler != null) {
             //给事件处理器设置其所在事件容器
             eventHandler.setEventEmitter(this);
@@ -35,6 +39,7 @@ public class EventEmitterImpl implements EventEmitter {
                 this.eventPool.put(eventName, list);
             }
         }
+        log.debug("eventPool.keySet:" + eventPool.entrySet());
     }
 
     @Override
@@ -50,9 +55,9 @@ public class EventEmitterImpl implements EventEmitter {
         /**
          * 如果此事件名称对应的处理器列表已经为空,则删除此事件
          */
-        if (this.getEventSequence(eventName).size() == 0) {
-            this.remove(eventName);
-        }
+//        if (this.getEventSequence(eventName).size() == 0) {
+//            this.remove(eventName);
+//        }
     }
 
     @Override
