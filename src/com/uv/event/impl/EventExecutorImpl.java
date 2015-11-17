@@ -18,6 +18,8 @@ import java.util.concurrent.Executors;
 public class EventExecutorImpl implements EventExecutor {
 
     private ExecutorService executorService;
+    private Log log = LogFactory.getLog(EventExecutorImpl.class);
+
 //
 //    @Override
 //    public void exec(final EventHandlerQueue<EventHandler> list, final JSONObject data) {
@@ -48,21 +50,23 @@ public class EventExecutorImpl implements EventExecutor {
     @Override
     public void exec(final String eventName, final EventHandlerQueue<EventHandler> list, final JSONObject data) {
         Runnable runnable = new Runnable() {
-            private Log log = LogFactory.getLog("");
 
             @Override
             public void run() {
-                for (Iterator<EventHandler> it = list.iterator(); it.hasNext(); ) {
-                    EventHandler eh = it.next();
-                    int lastCount = eh.canExecute();
-                    if (lastCount <= 0) {
-                        log.debug(eh.getEventName() + " remove eventHandler " + eh.getEventHandlerID());
-                        it.remove();
-                        if (lastCount == 0) eh.deal(eventName, data);
-                    } else {
-                        eh.deal(eventName, data);
-                    }
+                if (list != null) {
+                    log.debug("exec EventHandlerQueue count:" + list.size());
+                    for (Iterator<EventHandler> it = list.iterator(); it.hasNext(); ) {
+                        EventHandler eh = it.next();
+                        int lastCount = eh.canExecute();
+                        if (lastCount <= 0) {
+                            log.debug(eh.getEventName() + " remove eventHandler " + eh.getEventHandlerID());
+                            it.remove();
+                            if (lastCount == 0) eh.deal(eventName, data);
+                        } else {
+                            eh.deal(eventName, data);
+                        }
 
+                    }
                 }
 
             }
