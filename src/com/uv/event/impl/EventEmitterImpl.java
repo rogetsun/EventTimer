@@ -39,7 +39,7 @@ public class EventEmitterImpl implements EventEmitter {
                 this.eventPool.put(eventName, list);
             }
         }
-        log.debug("eventPool.keySet:" + eventPool.entrySet());
+        log.debug("eventPool.keySet:" + eventPool.keySet());
     }
 
     @Override
