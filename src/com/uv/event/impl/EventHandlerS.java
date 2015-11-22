@@ -67,6 +67,9 @@ public abstract class EventHandlerS implements EventHandler {
         this.desc = desc;
     }
 
+    public EventHandlerS() {
+    }
+
     public EventHandlerS(long id) {
         this.id = id;
     }
