@@ -44,6 +44,7 @@ public class EventEmitterImpl implements EventEmitter {
 
     @Override
     public void remove(String eventName) {
+        System.out.println("remove all " + eventName);
         if (eventName != null && eventName.length() > 0) {
             this.eventPool.remove(eventName);
         }
@@ -51,6 +52,7 @@ public class EventEmitterImpl implements EventEmitter {
 
     @Override
     public void remove(String eventName, EventHandler eventHandler) {
+        System.out.println("remove " + eventName + ":" + eventHandler.getEventHandlerID());
         EventHandlerQueue<EventHandler> queue = getEventSequence(eventName);
         if (queue != null && queue.size() > 0) {
             queue.remove(eventHandler);

@@ -27,6 +27,10 @@ public class EventUtil {
         eventEmitter.remove(eventName);
     }
 
+    public static void remove(String eventName, EventHandler eventHandler) {
+        eventEmitter.remove(eventName, eventHandler);
+    }
+
     /**
      * 触发指定事件,并给入事件对象
      *

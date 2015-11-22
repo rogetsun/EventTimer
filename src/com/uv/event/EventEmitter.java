@@ -12,14 +12,14 @@ public interface EventEmitter {
      * @param eventName
      * @param eventHandler
      */
-    public void on(String eventName, EventHandler eventHandler);
+    void on(String eventName, EventHandler eventHandler);
 
     /**
      * 移除事件全部处理器
      *
      * @param eventName
      */
-    public void remove(String eventName);
+    void remove(String eventName);
 
     /**
      * 移除事件某一个处理器
@@ -27,7 +27,7 @@ public interface EventEmitter {
      * @param eventName
      * @param eventHandler
      */
-    public void remove(String eventName, EventHandler eventHandler);
+    void remove(String eventName, EventHandler eventHandler);
 
     /**
      * 触发指定事件,并给入事件对象
@@ -35,7 +35,7 @@ public interface EventEmitter {
      * @param eventName
      * @param data
      */
-    public void trigger(String eventName, JSONObject data);
+    void trigger(String eventName, JSONObject data);
 
-    public void trigger(String eventName);
+    void trigger(String eventName);
 }
