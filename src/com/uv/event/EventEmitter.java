@@ -15,11 +15,19 @@ public interface EventEmitter {
     public void on(String eventName, EventHandler eventHandler);
 
     /**
-     * 移除事件
+     * 移除事件全部处理器
      *
      * @param eventName
      */
     public void remove(String eventName);
+
+    /**
+     * 移除事件某一个处理器
+     *
+     * @param eventName
+     * @param eventHandler
+     */
+    public void remove(String eventName, EventHandler eventHandler);
 
     /**
      * 触发指定事件,并给入事件对象

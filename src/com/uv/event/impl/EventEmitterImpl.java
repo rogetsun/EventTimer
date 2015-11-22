@@ -50,6 +50,12 @@ public class EventEmitterImpl implements EventEmitter {
     }
 
     @Override
+    public void remove(String eventName, EventHandler eventHandler) {
+        EventHandlerQueue<EventHandler> queue = getEventSequence(eventName);
+        queue.remove(eventHandler);
+    }
+
+    @Override
     public void trigger(String eventName, JSONObject data) {
         this.eventExecutor.exec(eventName, this.getEventSequence(eventName), data);
         /**
