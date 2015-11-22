@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -75,32 +74,6 @@ public class EventExecutorImpl implements EventExecutor {
         this.executorService.execute(runnable);
     }
 
-
-    /**
-     * 内部类,用于线程数据共享
-     */
-    class UserData {
-        private List<EventHandler> eventHandlerList;
-        private JSONObject data;
-
-        public UserData(List<EventHandler> list, JSONObject data) {
-            this.eventHandlerList = list;
-            this.data = data;
-        }
-
-        public List<EventHandler> getEventHandlerList() {
-            return this.eventHandlerList;
-        }
-
-        public JSONObject getData() {
-            return this.data;
-        }
-
-        public synchronized void removeEventHandler(EventHandler eventHandler) {
-            this.eventHandlerList.remove(eventHandler);
-        }
-
-    }
 
     public EventExecutorImpl() {
         /**
