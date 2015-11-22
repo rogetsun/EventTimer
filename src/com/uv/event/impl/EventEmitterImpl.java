@@ -52,7 +52,9 @@ public class EventEmitterImpl implements EventEmitter {
     @Override
     public void remove(String eventName, EventHandler eventHandler) {
         EventHandlerQueue<EventHandler> queue = getEventSequence(eventName);
-        queue.remove(eventHandler);
+        if (queue != null && queue.size() > 0) {
+            queue.remove(eventHandler);
+        }
     }
 
     @Override
