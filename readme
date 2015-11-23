@@ -1,0 +1,18 @@
+实现原理:
+    Event事件容器
+    核心容器为一个Map<String, EventHandlerQueue<EventHandler>>.key:事件名称,value:事件处理器队列
+    EventHandlerQueue底层用一个ConcurrentLinkedDeque双端队列实现.
+
+    Timer任务
+    底层用ScheduledExecutorService实现.
+    使用时也可以直接用TimerUtil.interval和TimerUtil.timeout传入TimerTask即可
+    任务默认实现了EventTimeTask,任务内部抛出构造器入参的事件名称.
+
+Event使用:
+    实例化一个EventEmitter,同时要一个EventExecutor.这件事情在EventUtil加载到内存时已经完成.
+        eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
+    EventEmitter在事件触发时,从容器中取出事件处理器队列,启动一个线程,交给EventExecutor执行.
+
+    所以直接用EventUtil.on(EventName, EventHandlerS)即可.
+    在触发事件时用EventUtil.trigger(EventName).
+
