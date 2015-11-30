@@ -10,6 +10,7 @@ public class EventUtil {
     private static EventEmitter eventEmitter;
 
     static {
+        System.out.println("init EventEmitter");
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
     }
 
