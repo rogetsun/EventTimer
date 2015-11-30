@@ -79,8 +79,8 @@ public class EventExecutorImpl implements EventExecutor {
         /**
          * 初始化执行器线程池
          */
-        System.out.println("init Thread Pool for 4");
-        this.executorService = Executors.newFixedThreadPool(4);
+        System.out.println("init Thread Pool for " + Runtime.getRuntime().availableProcessors());
+        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     public EventExecutorImpl(int threadPoolSize) {
