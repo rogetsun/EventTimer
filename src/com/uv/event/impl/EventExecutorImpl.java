@@ -62,7 +62,10 @@ public class EventExecutorImpl implements EventExecutor {
                             it.remove();
                             if (lastCount == 0) eh.deal(eventName, data);
                         } else {
-                            eh.deal(eventName, data);
+                            if (eh.beforeExec(eventName, data)) {//执行前置预处理
+                                eh.deal(eventName, data);
+                            }
+                            eh.afterExec(eventName, data);
                         }
 
                     }

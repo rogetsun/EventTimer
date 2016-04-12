@@ -2,6 +2,7 @@ package com.uv.event.impl;
 
 import com.uv.event.EventEmitter;
 import com.uv.event.EventHandler;
+import net.sf.json.JSONObject;
 
 /**
  * Created by uv2sun on 15/11/12.
@@ -16,6 +17,16 @@ public abstract class EventHandlerS implements EventHandler {
 //    public void deal(JSONObject data) {
 //        this.deal(getEventName(), data);
 //    }
+
+
+    @Override
+    public void afterExec(String eventName, JSONObject data) {
+    }
+
+    @Override
+    public boolean beforeExec(String eventName, JSONObject data) {
+        return true;
+    }
 
     @Override
     public String getEventHandlerDesc() {

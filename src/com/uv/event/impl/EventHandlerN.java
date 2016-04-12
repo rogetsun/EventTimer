@@ -1,5 +1,6 @@
 package com.uv.event.impl;
 
+import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,6 +21,15 @@ public abstract class EventHandlerN extends EventHandlerS {
                 return --execCount;
             }
         }
+    }
+
+    @Override
+    public void afterExec(String eventName, JSONObject data) {
+    }
+
+    @Override
+    public boolean beforeExec(String eventName, JSONObject data) {
+        return true;
     }
 
 //    public EventHandlerN(Integer execCount) {

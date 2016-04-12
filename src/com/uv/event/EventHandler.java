@@ -89,4 +89,19 @@ public interface EventHandler {
      * @return
      */
     String getEventHandlerDesc();
+
+    /**
+     * 执行前要做的事,可用于前置执行条件判断或者预处理数据
+     *
+     * @param data 事件触发时给予的数据
+     * @return true 继续执行,false 执行将被取消
+     */
+    boolean beforeExec(String eventName, JSONObject data);
+
+    /**
+     * 执行完后要做的事情
+     *
+     * @param data 事件触发时给予的数据, 可能deal已经处理
+     */
+    void afterExec(String eventName, JSONObject data);
 }
