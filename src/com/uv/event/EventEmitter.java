@@ -6,6 +6,7 @@ import net.sf.json.JSONObject;
  * Created by uv2sun on 15/11/9.
  */
 public interface EventEmitter {
+
     /**
      * 注册监听指定事件名称的事件处理器
      *
