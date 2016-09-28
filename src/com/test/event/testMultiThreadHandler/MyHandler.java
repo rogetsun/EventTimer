@@ -15,6 +15,7 @@ public class MyHandler extends EventHandlerS {
     public void deal(String eventName, JSONObject data) {
         System.out.println(data.get("id") + "," + new Date().toString());
         System.out.println(o);
+        System.out.println(Thread.currentThread().getId() + ":" + Thread.currentThread().getName());
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
