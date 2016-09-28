@@ -9,9 +9,12 @@ import java.util.Date;
  * Created by uv2sun on 16/9/28.
  */
 public class MyHandler extends EventHandlerS {
+    private Object o = new Object();
+
     @Override
     public void deal(String eventName, JSONObject data) {
         System.out.println(data.get("id") + "," + new Date().toString());
+        System.out.println(o);
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
