@@ -9,13 +9,22 @@ import net.sf.json.JSONObject;
 public class EventUtil {
     private static EventEmitter eventEmitter;
 
-    static {
-        System.out.println("init EventEmitter");
+    //    static {
+//        System.out.println("init EventEmitter");
+//        eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
+//    }
+    public static void init(int threadPoolSize) {
+        eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(threadPoolSize));
+    }
+
+    public static void init() {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
     }
 
-
     public static void on(String eventName, EventHandler eventHandler) {
+        if (eventEmitter == null) {
+            init();
+        }
         eventEmitter.on(eventName, eventHandler);
     }
 
