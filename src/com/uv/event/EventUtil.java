@@ -17,6 +17,10 @@ public class EventUtil {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(threadPoolSize));
     }
 
+    public static void init(int corePoolSize, int maxPoolSize) {
+        eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(corePoolSize, maxPoolSize));
+    }
+
     public static void init() {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
     }
