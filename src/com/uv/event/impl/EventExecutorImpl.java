@@ -3,13 +3,14 @@ package com.uv.event.impl;
 import com.uv.event.EventExecutor;
 import com.uv.event.EventHandler;
 import com.uv.event.EventHandlerQueue;
+import com.uv.timer.TimerUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * Created by uv2sun on 15/11/10.
@@ -92,5 +93,10 @@ public class EventExecutorImpl implements EventExecutor {
          */
         System.out.println("init Thread Pool for " + threadPoolSize);
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
+    }
+
+    public EventExecutorImpl(int corePoolSize, int maxPoolSize) {
+        System.out.println("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
+        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 }
