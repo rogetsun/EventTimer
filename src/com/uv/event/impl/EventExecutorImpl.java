@@ -97,6 +97,6 @@ public class EventExecutorImpl implements EventExecutor {
 
     public EventExecutorImpl(int corePoolSize, int maxPoolSize) {
         System.out.println("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
-        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5000));
     }
 }
