@@ -1,18 +1,18 @@
 package com.uv.event;
 
+import com.uv.event.impl.EventAllInOneThreadExecutorImpl;
 import com.uv.event.impl.EventExecutorImpl;
 import net.sf.json.JSONObject;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by uv2sun on 15/11/12.
  */
 public class EventUtil {
     private static EventEmitter eventEmitter;
+    public static String EventContainerName = "ECN";
 
-    //    static {
-//        System.out.println("init EventEmitter");
-//        eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
-//    }
     public static void init(int threadPoolSize) {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(threadPoolSize));
     }
@@ -24,6 +24,19 @@ public class EventUtil {
     public static void init() {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
     }
+
+    public static void initAllInOne() {
+        eventEmitter = EventEmitterFactory.getEventEmitter(new EventAllInOneThreadExecutorImpl(EventContainerName));
+    }
+
+    public static void initAllInOne(int threadPoolSize) {
+        eventEmitter = EventEmitterFactory.getEventEmitter(new EventAllInOneThreadExecutorImpl(EventContainerName, threadPoolSize));
+    }
+
+    public static void initAllInOne(int threadCorePoolSize, int threadMaxPoolSize) {
+        eventEmitter = EventEmitterFactory.getEventEmitter(new EventAllInOneThreadExecutorImpl(EventContainerName, threadCorePoolSize, threadMaxPoolSize));
+    }
+
 
     public static void on(String eventName, EventHandler eventHandler) {
         if (eventEmitter == null) {
@@ -57,6 +70,11 @@ public class EventUtil {
 
     public static void trigger(String eventName) {
         eventEmitter.trigger(eventName);
+    }
+
+
+    public static ExecutorService getExecutorService() {
+        return eventEmitter.getExecutor().getExecutorService();
     }
 
 }

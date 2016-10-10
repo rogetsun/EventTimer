@@ -49,33 +49,14 @@ public class EventExecutorImpl implements EventExecutor {
 
     @Override
     public void exec(final String eventName, final EventHandlerQueue<EventHandler> list, final JSONObject data) {
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                if (list != null) {
-                    log.debug("exec EventHandlerQueue count:" + list.size());
-                    for (Iterator<EventHandler> it = list.iterator(); it.hasNext(); ) {
-                        EventHandler eh = it.next();
-                        int lastCount = eh.canExecute();
-                        if (lastCount <= 0) {
-                            log.debug(eh.getEventName() + " remove eventHandler " + eh.getEventHandlerID());
-                            it.remove();
-                            if (lastCount == 0) eh.deal(eventName, data);
-                        } else {
-                            if (eh.beforeExec(eventName, data)) {//执行前置预处理
-                                eh.deal(eventName, data);
-                            }
-                            eh.afterExec(eventName, data);
-                        }
-
-                    }
-                }
-
-            }
-        };
-
+        Runnable runnable = new EventHandlerRunnableImpl(eventName, list, data);
+        log.debug("run EventHandlerRunnableImpl:" + eventName + ",list.count:" + list.size() + ",data:" + data);
         this.executorService.execute(runnable);
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return this.executorService;
     }
 
 

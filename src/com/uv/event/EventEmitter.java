@@ -39,4 +39,6 @@ public interface EventEmitter {
     void trigger(String eventName, JSONObject data);
 
     void trigger(String eventName);
+
+    EventExecutor getExecutor();
 }

@@ -75,6 +75,11 @@ public class EventEmitterImpl implements EventEmitter {
         this.trigger(eventName, null);
     }
 
+    @Override
+    public EventExecutor getExecutor() {
+        return this.eventExecutor;
+    }
+
     /**
      * 从事件池提取对应时间名称的事件容器(列表)
      *

@@ -66,4 +66,12 @@ public class TimerUtil {
             it.remove();
         }
     }
+
+    public static boolean isShutdown() {
+        return scheduledExecutorService.isShutdown();
+    }
+
+    public static ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
+    }
 }
