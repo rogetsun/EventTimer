@@ -2,6 +2,8 @@ package com.uv.event;
 
 import net.sf.json.JSONObject;
 
+import java.util.concurrent.RejectedExecutionException;
+
 /**
  * Created by uv2sun on 15/11/9.
  */
@@ -36,9 +38,9 @@ public interface EventEmitter {
      * @param eventName
      * @param data
      */
-    void trigger(String eventName, JSONObject data);
+    void trigger(String eventName, JSONObject data) throws RejectedExecutionException;
 
-    void trigger(String eventName);
+    void trigger(String eventName) throws RejectedExecutionException;
 
     EventExecutor getExecutor();
 }
