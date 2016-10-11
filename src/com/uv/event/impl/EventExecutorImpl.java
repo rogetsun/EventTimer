@@ -48,10 +48,16 @@ public class EventExecutorImpl implements EventExecutor {
 //    }
 
     @Override
-    public void exec(final String eventName, final EventHandlerQueue<EventHandler> list, final JSONObject data) {
-        Runnable runnable = new EventHandlerRunnableImpl(eventName, list, data);
-        log.debug("run EventHandlerRunnableImpl:" + eventName + ",list.count:" + list.size() + ",data:" + data);
-        this.executorService.execute(runnable);
+    public void exec(final String eventName, final EventHandlerQueue<EventHandler> list, final JSONObject data) throws RejectedExecutionException {
+        try {
+            Runnable runnable = new EventHandlerRunnableImpl(eventName, list, data);
+            log.debug("run EventHandlerRunnableImpl:" + eventName + ",list.count:" + list.size() + ",data:" + data);
+            this.executorService.execute(runnable);
+        } catch (Throwable e) {
+            log.error(this.getExecutorService());
+            log.error(e);
+            throw e;
+        }
     }
 
     @Override
@@ -66,6 +72,7 @@ public class EventExecutorImpl implements EventExecutor {
          */
         System.out.println("init Thread Pool for " + Runtime.getRuntime().availableProcessors());
         this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+//        this.executorService = Executors.newCachedThreadPool();
     }
 
     public EventExecutorImpl(int threadPoolSize) {
@@ -74,10 +81,12 @@ public class EventExecutorImpl implements EventExecutor {
          */
         System.out.println("init Thread Pool for " + threadPoolSize);
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
+
     }
 
     public EventExecutorImpl(int corePoolSize, int maxPoolSize) {
         System.out.println("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
-        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5000));
+        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20000));
     }
+
 }

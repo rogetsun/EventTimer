@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Created by uv2sun on 15/11/10.
@@ -60,7 +61,7 @@ public class EventEmitterImpl implements EventEmitter {
     }
 
     @Override
-    public void trigger(String eventName, JSONObject data) {
+    public void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
         this.eventExecutor.exec(eventName, this.getEventSequence(eventName), data);
         /**
          * 如果此事件名称对应的处理器列表已经为空,则删除此事件
@@ -71,7 +72,7 @@ public class EventEmitterImpl implements EventEmitter {
     }
 
     @Override
-    public void trigger(String eventName) {
+    public void trigger(String eventName) throws RejectedExecutionException {
         this.trigger(eventName, null);
     }
 

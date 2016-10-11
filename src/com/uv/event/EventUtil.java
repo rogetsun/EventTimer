@@ -5,6 +5,7 @@ import com.uv.event.impl.EventExecutorImpl;
 import net.sf.json.JSONObject;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Created by uv2sun on 15/11/12.
@@ -64,11 +65,11 @@ public class EventUtil {
      * @param eventName
      * @param data
      */
-    public static void trigger(String eventName, JSONObject data) {
+    public static void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
         eventEmitter.trigger(eventName, data);
     }
 
-    public static void trigger(String eventName) {
+    public static void trigger(String eventName) throws RejectedExecutionException {
         eventEmitter.trigger(eventName);
     }
 
