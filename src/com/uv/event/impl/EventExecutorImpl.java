@@ -55,7 +55,7 @@ public class EventExecutorImpl implements EventExecutor {
             this.executorService.execute(runnable);
         } catch (Throwable e) {
             log.error(this.getExecutorService());
-            log.error(e);
+            log.error("run " + eventName + " deal error.", e);
             throw e;
         }
     }
@@ -86,7 +86,7 @@ public class EventExecutorImpl implements EventExecutor {
 
     public EventExecutorImpl(int corePoolSize, int maxPoolSize) {
         System.out.println("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
-        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20000));
+        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(maxPoolSize * 50));
     }
 
 }
