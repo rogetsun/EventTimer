@@ -55,7 +55,7 @@ public class EventExecutorImpl implements EventExecutor {
             this.executorService.execute(runnable);
         } catch (Throwable e) {
             log.error(this.getExecutorService());
-            log.error("run " + eventName + " deal error.", e);
+            log.error("add " + eventName + " to deal queue error.", e);
             throw e;
         }
     }
