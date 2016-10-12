@@ -35,7 +35,7 @@ public class EventHandlerRunnableImpl implements Runnable {
                         }
                         eh.afterExec(eventName, data);
                     } catch (Exception e) {
-                        logger.error(e);
+                        logger.error("[" + eventName + "]EventHandler.deal[" + data + "]error.", e);
                     }
                 }
 
