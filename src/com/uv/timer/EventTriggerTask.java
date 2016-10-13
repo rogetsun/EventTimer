@@ -4,6 +4,7 @@ import com.uv.event.EventUtil;
 import net.sf.json.JSONObject;
 
 import java.util.TimerTask;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Created by uv2sun on 15/11/12.
@@ -15,7 +16,11 @@ public class EventTriggerTask extends TimerTask {
 
     @Override
     public void run() {
-        EventUtil.trigger(eventName, data);
+        try {
+            EventUtil.trigger(eventName, data);
+        } catch (RejectedExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     public EventTriggerTask(String eventName) {
