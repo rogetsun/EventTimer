@@ -1,12 +1,7 @@
 package com.test.event.testMultiThreadHandler;
 
-import com.uv.event.EventHandler;
 import com.uv.event.EventUtil;
-import com.uv.event.impl.EventHandlerN;
-import com.uv.event.impl.EventHandlerS;
 import net.sf.json.JSONObject;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by uv2sun on 16/9/28.

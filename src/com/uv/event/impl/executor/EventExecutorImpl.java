@@ -1,15 +1,11 @@
-package com.uv.event.impl;
+package com.uv.event.impl.executor;
 
 import com.uv.event.EventExecutor;
-import com.uv.event.EventHandler;
 import com.uv.event.EventHandlerQueue;
-import com.uv.timer.TimerUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.*;
 
 /**

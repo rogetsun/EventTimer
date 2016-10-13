@@ -2,7 +2,7 @@ package com.test.event;
 
 import com.uv.event.EventEmitter;
 import com.uv.event.EventEmitterFactory;
-import com.uv.event.impl.EventExecutorImpl;
+import com.uv.event.impl.executor.EventExecutorImpl;
 import com.uv.event.impl.EventHandlerN;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;

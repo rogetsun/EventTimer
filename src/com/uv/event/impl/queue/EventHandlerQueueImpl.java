@@ -1,4 +1,4 @@
-package com.uv.event.impl;
+package com.uv.event.impl.queue;
 
 import com.uv.event.EventHandlerQueue;
 

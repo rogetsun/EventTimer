@@ -1,6 +1,7 @@
-package com.uv.event.impl;
+package com.uv.event.impl.eventEmitter;
 
 import com.uv.event.*;
+import com.uv.event.impl.queue.EventHandlerQueueImpl;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

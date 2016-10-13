@@ -1,8 +1,7 @@
 package com.uv.event;
 
-import com.test.event.testMultiThreadHandler.MyHandler;
-import com.uv.event.impl.EventAllInOneThreadExecutorImpl;
-import com.uv.event.impl.EventExecutorImpl;
+import com.uv.event.impl.executor.EventAllInOneThreadExecutorImpl;
+import com.uv.event.impl.executor.EventExecutorImpl;
 import net.sf.json.JSONObject;
 
 import java.util.concurrent.ExecutorService;
