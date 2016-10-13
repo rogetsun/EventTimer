@@ -48,7 +48,7 @@ public class EventExecutorImpl implements EventExecutor {
 //    }
 
     @Override
-    public void exec(final String eventName, final EventHandlerQueue<EventHandler> list, final JSONObject data) throws RejectedExecutionException {
+    public void exec(final String eventName, final EventHandlerQueue list, final JSONObject data) throws RejectedExecutionException {
         try {
             Runnable runnable = new EventHandlerRunnableImpl(eventName, list, data);
             log.debug("run EventHandlerRunnableImpl:" + eventName + ",list.count:" + list.size() + ",data:" + data);

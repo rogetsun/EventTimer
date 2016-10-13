@@ -17,6 +17,8 @@ public interface EventEmitter {
      */
     void on(String eventName, EventHandler eventHandler);
 
+    void on(String eventName, Class<? extends EventHandler> eventHandlerClass);
+
     /**
      * 移除事件全部处理器
      *
@@ -31,6 +33,8 @@ public interface EventEmitter {
      * @param eventHandler
      */
     void remove(String eventName, EventHandler eventHandler);
+
+    void remove(String eventName, Class<EventHandler> eventHandlerClass);
 
     /**
      * 触发指定事件,并给入事件对象

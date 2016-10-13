@@ -16,25 +16,34 @@ public class EventAllInOneThreadExecutorImpl implements EventExecutor {
     private ExecutorService executorService;
 
     @Override
-    public void exec(String eventName, EventHandlerQueue<EventHandler> list, JSONObject data) {
+    public void exec(String eventName, EventHandlerQueue list, JSONObject data) {
         String currentThreadName = Thread.currentThread().getName();
         logger.debug("currentThreadName:" + currentThreadName);
         if (currentThreadName.indexOf("UVEvent-" + EventUtil.EventContainerName) == 0) {
             logger.debug("当前线程为事件线程池线程，直接执行！");
             // TODO: 16/9/30 一个线程执行所有handler
-            for (Iterator<EventHandler> it = list.iterator(); it.hasNext(); ) {
-
-                EventHandler eh = it.next();
-                int lastCount = eh.canExecute();
+            for (Iterator it = list.iterator(); it.hasNext(); ) {
+                Object e = it.next();
+                EventHandler eh = null;
+                if (e instanceof Class) {
+                    try {
+                        eh = (EventHandler) ((Class) e).newInstance();
+                    } catch (InstantiationException | IllegalAccessException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    eh = (EventHandler) e;
+                }
+                int lastCount = eh != null ? eh.canExecute() : 1;
                 if (lastCount <= 0) {
                     logger.debug(eh.getEventName() + " remove eventHandler " + eh.getEventHandlerID());
                     it.remove();
                     if (lastCount == 0) eh.deal(eventName, data);
                 } else {
-                    if (eh.beforeExec(eventName, data)) {//执行前置预处理
+                    if (eh != null && eh.beforeExec(eventName, data)) {//执行前置预处理
                         eh.deal(eventName, data);
+                        eh.afterExec(eventName, data);
                     }
-                    eh.afterExec(eventName, data);
                 }
 
             }
@@ -70,7 +79,7 @@ public class EventAllInOneThreadExecutorImpl implements EventExecutor {
 
     public EventAllInOneThreadExecutorImpl(String poolName, int corePoolSize, int maxPoolSize) {
         logger.debug("init Thread Pool for size:" + corePoolSize + "/" + maxPoolSize);
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(
+        this.executorService = new ThreadPoolExecutor(
                 corePoolSize,
                 maxPoolSize,
                 30,
@@ -78,6 +87,5 @@ public class EventAllInOneThreadExecutorImpl implements EventExecutor {
                 new LinkedBlockingQueue<Runnable>(5000),
                 new EventThreadFactory(poolName)
         );
-        this.executorService = pool;
     }
 }

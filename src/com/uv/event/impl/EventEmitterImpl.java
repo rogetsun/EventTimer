@@ -14,34 +14,49 @@ import java.util.concurrent.RejectedExecutionException;
  * 事件容器
  */
 public class EventEmitterImpl implements EventEmitter {
-    private Map<String, EventHandlerQueue<EventHandler>> eventPool;
+    private Map<String, EventHandlerQueue<Object>> eventPool;
     private EventExecutor eventExecutor;
-    Log log = LogFactory.getLog(EventEmitterImpl.class);
+    private static Log log = LogFactory.getLog(EventEmitterImpl.class);
 
     @Override
     public void on(String eventName, EventHandler eventHandler) {
-        log.debug("on " + eventName + ",EventHandlerID:" + eventHandler.getEventHandlerID());
+        log.debug("on [" + eventName + "]EventHandlerID:" + eventHandler.getEventHandlerID());
         if (eventName != null && eventName.length() > 0 && eventHandler != null) {
             //给事件处理器设置其所在事件容器
             eventHandler.setEventEmitter(this);
             //给事件处理器添加处理事件的名称
             eventHandler.setEventName(eventName);
-
-            if (this.eventPool.containsKey(eventName)) { //如果已经存在当前事件
-                EventHandlerQueue<EventHandler> list = this.eventPool.get(eventName);
-                if (list == null) {//事件存在,但是事件处理器容器为null
-                    list = new EventHandlerQueueImpl<EventHandler>();
-                    this.eventPool.put(eventName, list);//重新添加
-                }
-                list.add(eventHandler);//事件处理器添加进容器
-            } else {//不存在当前事件
-                EventHandlerQueue<EventHandler> list = new EventHandlerQueueImpl<EventHandler>();
-                list.add(eventHandler);
-                this.eventPool.put(eventName, list);
-            }
+            addEventToPool(eventName, eventHandler);
+//            if (this.eventPool.containsKey(eventName)) { //如果已经存在当前事件
+//                EventHandlerQueue list = this.eventPool.get(eventName);
+//                if (list == null) {//事件存在,但是事件处理器容器为null
+//                    list = new EventHandlerQueueImpl<>();
+//                    this.eventPool.put(eventName, list);//重新添加
+//                }
+//                list.add(eventHandler);//事件处理器添加进容器
+//            } else {//不存在当前事件
+//                EventHandlerQueue list = new EventHandlerQueueImpl<>();
+//                list.add(eventHandler);
+//                this.eventPool.put(eventName, list);
+//            }
         }
         log.debug("eventPool.keySet:" + eventPool.keySet());
     }
+
+    @Override
+    public void on(String eventName, Class<? extends EventHandler> eventHandlerClass) {
+        Class[] cs = eventHandlerClass.getInterfaces();
+        System.out.println(cs.length);
+        for (int i = 0; i < cs.length; i++) {
+            System.out.println(cs[i]);
+        }
+        log.debug("on [" + eventName + "]EventHandlerClass:" + eventHandlerClass);
+        if (eventName != null && eventName.length() > 0 && eventHandlerClass != null) {
+            addEventToPool(eventName, eventHandlerClass);
+        }
+        log.debug("eventPool.keySet:" + eventPool.keySet());
+    }
+
 
     @Override
     public void remove(String eventName) {
@@ -54,11 +69,21 @@ public class EventEmitterImpl implements EventEmitter {
     @Override
     public void remove(String eventName, EventHandler eventHandler) {
         System.out.println("remove " + eventName + ":" + eventHandler.getEventHandlerID());
-        EventHandlerQueue<EventHandler> queue = getEventSequence(eventName);
+        EventHandlerQueue queue = getEventSequence(eventName);
         if (queue != null && queue.size() > 0) {
             queue.remove(eventHandler);
         }
     }
+
+    @Override
+    public void remove(String eventName, Class<EventHandler> eventHandlerClass) {
+        System.out.println("remove " + eventName + ":" + eventHandlerClass);
+        EventHandlerQueue queue = getEventSequence(eventName);
+        if (queue != null && queue.size() > 0) {
+            queue.remove(eventHandlerClass);
+        }
+    }
+
 
     @Override
     public void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
@@ -87,12 +112,33 @@ public class EventEmitterImpl implements EventEmitter {
      * @param eventName
      * @return
      */
-    public EventHandlerQueue<EventHandler> getEventSequence(String eventName) {
+    public EventHandlerQueue getEventSequence(String eventName) {
         return this.eventPool.get(eventName);
     }
 
     public EventEmitterImpl(EventExecutor eventExecutor) {
-        this.eventPool = new HashMap<String, EventHandlerQueue<EventHandler>>();
+        this.eventPool = new HashMap<>();
         this.eventExecutor = eventExecutor;
+    }
+
+    /**
+     * 将ehOrClass(eventHandler实例或者类)添加到event Pool
+     *
+     * @param eventName
+     * @param ehOrClass
+     */
+    private void addEventToPool(String eventName, Object ehOrClass) {
+        if (this.eventPool.containsKey(eventName)) { //如果已经存在当前事件
+            EventHandlerQueue list = this.eventPool.get(eventName);
+            if (list == null) {//事件存在,但是事件处理器容器为null
+                list = new EventHandlerQueueImpl<>();
+                this.eventPool.put(eventName, list);//重新添加
+            }
+            list.add(ehOrClass);//事件处理器添加进容器
+        } else {//不存在当前事件
+            EventHandlerQueue list = new EventHandlerQueueImpl<>();
+            list.add(ehOrClass);
+            this.eventPool.put(eventName, list);
+        }
     }
 }

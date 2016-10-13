@@ -1,5 +1,6 @@
 package com.uv.event;
 
+import com.test.event.testMultiThreadHandler.MyHandler;
 import com.uv.event.impl.EventAllInOneThreadExecutorImpl;
 import com.uv.event.impl.EventExecutorImpl;
 import net.sf.json.JSONObject;
@@ -46,6 +47,13 @@ public class EventUtil {
         eventEmitter.on(eventName, eventHandler);
     }
 
+    public static void on(String eventName, Class<? extends EventHandler> eventHandlerClass) {
+        if (eventEmitter == null) {
+            init();
+        }
+        eventEmitter.on(eventName, eventHandlerClass);
+    }
+
     /**
      * 移除事件
      *
@@ -57,6 +65,10 @@ public class EventUtil {
 
     public static void remove(String eventName, EventHandler eventHandler) {
         eventEmitter.remove(eventName, eventHandler);
+    }
+
+    public static void remove(String eventName, Class<EventHandler> eventHandlerClass) {
+        eventEmitter.remove(eventName, eventHandlerClass);
     }
 
     /**
