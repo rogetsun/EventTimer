@@ -46,9 +46,11 @@ public class EventExecutorImpl implements EventExecutor {
     @Override
     public void exec(final String eventName, final EventHandlerQueue list, final JSONObject data) throws RejectedExecutionException {
         try {
-            Runnable runnable = new EventHandlerRunnableImpl(eventName, list, data);
-            log.debug("run EventHandlerRunnableImpl:" + eventName + ",list.count:" + list.size() + ",data:" + data);
-            this.executorService.execute(runnable);
+            log.debug("run EventHandlerRunnableImpl:" + eventName + ",list.count:" + (list == null ? 0 : list.size()) + ",data:" + data);
+            if (list != null && list.size() > 0) {
+                Runnable runnable = new EventHandlerRunnableImpl(eventName, list, data);
+                this.executorService.execute(runnable);
+            }
         } catch (Throwable e) {
             log.error(this.getExecutorService());
             log.error("add " + eventName + " to deal queue error.", e);
@@ -82,7 +84,7 @@ public class EventExecutorImpl implements EventExecutor {
 
     public EventExecutorImpl(int corePoolSize, int maxPoolSize) {
         System.out.println("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
-        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(maxPoolSize * 50));
+        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(maxPoolSize * 200));
     }
 
 }
