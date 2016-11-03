@@ -2,6 +2,8 @@ package com.uv.event.impl.executor;
 
 import com.uv.event.EventExecutor;
 import com.uv.event.EventHandlerQueue;
+import com.uv.event.EventThreadFactory;
+import com.uv.event.EventUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,7 +71,7 @@ public class EventExecutorImpl implements EventExecutor {
          * 初始化执行器线程池
          */
         System.out.println("init Thread Pool for " + Runtime.getRuntime().availableProcessors());
-        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new EventThreadFactory(EventUtil.EventContainerName));
 //        this.executorService = Executors.newCachedThreadPool();
     }
 
@@ -78,13 +80,16 @@ public class EventExecutorImpl implements EventExecutor {
          * 初始化执行器线程池
          */
         System.out.println("init Thread Pool for " + threadPoolSize);
-        this.executorService = Executors.newFixedThreadPool(threadPoolSize);
+        this.executorService = Executors.newFixedThreadPool(threadPoolSize, new EventThreadFactory(EventUtil.EventContainerName));
 
     }
 
     public EventExecutorImpl(int corePoolSize, int maxPoolSize) {
         System.out.println("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
-        this.executorService = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(maxPoolSize * 200));
+        this.executorService =
+                new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS,
+                        new LinkedBlockingQueue<Runnable>(maxPoolSize * 200),
+                        new EventThreadFactory(EventUtil.EventContainerName));
     }
 
 }
