@@ -2,7 +2,6 @@ package com.uv.event.impl.executor;
 
 import com.uv.event.EventExecutor;
 import com.uv.event.EventHandlerQueue;
-import com.uv.event.EventThreadFactory;
 import com.uv.event.EventUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
