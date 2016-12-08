@@ -51,6 +51,6 @@ public class EventWatcher implements Runnable {
     }
 
     public void stop() {
-
+        this.isStop = true;
     }
 }
