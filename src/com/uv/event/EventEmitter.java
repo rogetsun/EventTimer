@@ -2,6 +2,7 @@ package com.uv.event;
 
 import net.sf.json.JSONObject;
 
+import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
@@ -47,4 +48,6 @@ public interface EventEmitter {
     void trigger(String eventName) throws RejectedExecutionException;
 
     EventExecutor getExecutor();
+
+    Map<String, EventHandlerQueue<Object>> getEventPool();
 }

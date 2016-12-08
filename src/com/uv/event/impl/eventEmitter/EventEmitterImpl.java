@@ -107,6 +107,11 @@ public class EventEmitterImpl implements EventEmitter {
         return this.eventExecutor;
     }
 
+    @Override
+    public Map<String, EventHandlerQueue<Object>> getEventPool() {
+        return this.eventPool;
+    }
+
     /**
      * 从事件池提取对应时间名称的事件容器(列表)
      *

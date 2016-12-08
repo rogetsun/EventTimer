@@ -4,6 +4,7 @@ import com.uv.event.impl.executor.EventAllInOneThreadExecutorImpl;
 import com.uv.event.impl.executor.EventExecutorImpl;
 import net.sf.json.JSONObject;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -89,4 +90,7 @@ public class EventUtil {
         return eventEmitter.getExecutor().getExecutorService();
     }
 
+    public static Map<String, EventHandlerQueue<Object>> getEventPool() {
+        return eventEmitter.getEventPool();
+    }
 }
