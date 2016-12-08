@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by uv2sun on 2016/12/8.
@@ -24,7 +25,9 @@ public class EventWatcher implements Runnable {
 
                 log.debug(EventUtil.getExecutorService());
                 Map<String, EventHandlerQueue<Object>> ep = EventUtil.getEventPool();
-                String[] keys = (String[]) ep.keySet().toArray();
+                Set<String> keySet = ep.keySet();
+                String[] keys = new String[keySet.size()];
+                keys = keySet.toArray(keys);
                 for (String key : keys) {
                     StringBuffer sb = new StringBuffer();
                     EventHandlerQueue queue = ep.get(key);
