@@ -60,6 +60,7 @@ public class EventExecutorImpl implements EventExecutor {
             boolean ok = false;
             while (c > 0 && !ok) {
                 try {
+                    log.debug("re " + c + " times execute event:" + eventName);
                     this.executorService.execute(runnable);
                     ok = true;
                 } catch (RejectedExecutionException e1) {

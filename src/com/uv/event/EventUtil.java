@@ -14,7 +14,7 @@ import java.util.concurrent.RejectedExecutionException;
 public class EventUtil {
     private static EventEmitter eventEmitter;
     public static String EventContainerName = "ECN";
-    public static int taskRejectCount = 10;
+    public static int taskRejectCount = 100;
 
     public static void init(int threadPoolSize) {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(threadPoolSize));
