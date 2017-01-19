@@ -46,16 +46,32 @@ public class EventExecutorImpl implements EventExecutor {
 
     @Override
     public void exec(final String eventName, final EventHandlerQueue list, final JSONObject data) throws RejectedExecutionException {
+        Runnable runnable = null;
         try {
             log.debug("run EventHandlerRunnableImpl:" + eventName + ",list.count:" + (list == null ? 0 : list.size()) + ",data:" + data);
             if (list != null && list.size() > 0) {
-                Runnable runnable = new EventHandlerRunnableImpl(eventName, list, data);
+                runnable = new EventHandlerRunnableImpl(eventName, list, data);
                 this.executorService.execute(runnable);
             }
         } catch (Throwable e) {
             log.error(this.getExecutorService());
             log.error("add " + eventName + " to deal queue error.", e);
-            throw e;
+            int c = EventUtil.taskRejectCount;
+            boolean ok = false;
+            while (c > 0 && !ok) {
+                try {
+                    this.executorService.execute(runnable);
+                    ok = true;
+                } catch (RejectedExecutionException e1) {
+                    c--;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+            if (!ok) throw e;
         }
     }
 

@@ -11,6 +11,7 @@ import java.util.concurrent.*;
 
 /**
  * Created by uv2sun on 2017/1/19.
+ * 当前实现不靠谱，放入二级缓存后无法不会正常放进EventTaskQueue执行了
  */
 public class EventExecutorCacheImpl extends EventExecutorImpl {
     private static final Log log = LogFactory.getLog(EventExecutorCacheImpl.class);
@@ -23,42 +24,35 @@ public class EventExecutorCacheImpl extends EventExecutorImpl {
 
     @Override
     public void exec(String eventName, EventHandlerQueue list, JSONObject data) throws RejectedExecutionException {
-        if (this.cache.size() > 0) {
+        try {
+            this.superExec(eventName, list, data);
+        } catch (RejectedExecutionException e) {
+            log.debug("EventTaskQueue is full, forward to The twice cache;");
             this.cache.add(toMap(eventName, list, data));
-        } else {
-            try {
-                super.exec(eventName, list, data);
-            } catch (RejectedExecutionException e) {
-                log.debug("EventTaskQueue is full, forward to The twice cache;");
-                this.cache.add(toMap(eventName, list, data));
-                log.debug("EventTaskQueue twice cache size:" + this.cache.size());
-                synchronized (this) {
-                    if (this.cacheSwitchThread == null || !this.cacheSwitchThread.isAlive()) {
-                        this.cacheSwitchThread = new Thread(new Runnable() {
-                            private Map<String, Object> tmpMap;
+            log.debug("EventTaskQueue twice cache size:" + this.cache.size());
+            synchronized (this) {
+                if (this.cacheSwitchThread == null || !this.cacheSwitchThread.isAlive()) {
+                    this.cacheSwitchThread = new Thread(new Runnable() {
+                        private Map<String, Object> tmpMap;
 
-                            @Override
-                            public void run() {
-                                while (cache.size() > 0) {
-                                    log.debug("EventTaskQueue Thread deal queue cache, size="+cache.size());
+                        @Override
+                        public void run() {
+                            while (cache.size() > 0) {
+                                if (this.tmpMap == null) {
+                                    this.tmpMap = cache.poll();
+                                }
+                                if (this.tmpMap != null) {
                                     try {
-                                        if (this.tmpMap == null) {
-                                            this.tmpMap = cache.poll(1, TimeUnit.SECONDS);
-                                        }
-                                        if (this.tmpMap != null) {
-                                            try {
-                                                superExec(this.tmpMap.get("eventName").toString(), (EventHandlerQueue) this.tmpMap.get("eventHandlerQueue"), JSONObject.fromObject(this.tmpMap.get("data")));
-                                                this.tmpMap = null;
-                                            } catch (RejectedExecutionException e2) {
-                                            }
-                                        }
-                                    } catch (InterruptedException e1) {
+                                        superExec(this.tmpMap.get("eventName").toString(), (EventHandlerQueue) this.tmpMap.get("eventHandlerQueue"), JSONObject.fromObject(this.tmpMap.get("data")));
+                                        log.debug("EventTaskQueue Thread deal [" + this.tmpMap.get("eventName") + ":" + this.tmpMap.get("data") + "] queue cache, size=" + cache.size() + "");
+                                        this.tmpMap = null;
+                                    } catch (RejectedExecutionException e2) {
                                     }
                                 }
                             }
-                        });
-                        this.cacheSwitchThread.start();
-                    }
+                        }
+                    });
+                    this.cacheSwitchThread.start();
                 }
             }
         }
