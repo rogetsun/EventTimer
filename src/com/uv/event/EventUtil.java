@@ -23,9 +23,14 @@ public class EventUtil {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(corePoolSize, maxPoolSize));
     }
 
+    public static void init(EventExecutor eventExecutor) {
+        eventEmitter = EventEmitterFactory.getEventEmitter(eventExecutor);
+    }
+
     public static void init() {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl());
     }
+
 
     public static void initAllInOne() {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventAllInOneThreadExecutorImpl(EventContainerName));
@@ -88,6 +93,10 @@ public class EventUtil {
 
     public static ExecutorService getExecutorService() {
         return eventEmitter.getExecutor().getExecutorService();
+    }
+
+    public static String getEventQueueInfo() {
+        return eventEmitter.getExecutor().toString();
     }
 
     public static Map<String, EventHandlerQueue<Object>> getEventPool() {

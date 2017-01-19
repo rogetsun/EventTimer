@@ -78,13 +78,13 @@ public class EventExecutorImpl implements EventExecutor {
         /**
          * 初始化执行器线程池
          */
-        System.out.println("init Thread Pool for " + threadPoolSize);
+        log.debug("init Thread Pool for " + threadPoolSize);
         this.executorService = Executors.newFixedThreadPool(threadPoolSize, new EventThreadFactory(EventUtil.EventContainerName));
 
     }
 
     public EventExecutorImpl(int corePoolSize, int maxPoolSize) {
-        System.out.println("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
+        log.debug("init Thread Pool for " + corePoolSize + "/" + maxPoolSize);
         int queueSize = maxPoolSize > 50 ? maxPoolSize * 200 : 10000;
         this.executorService =
                 new ThreadPoolExecutor(corePoolSize, maxPoolSize, 30, TimeUnit.SECONDS,
@@ -92,4 +92,15 @@ public class EventExecutorImpl implements EventExecutor {
                         new EventThreadFactory(EventUtil.EventContainerName));
     }
 
+    public EventExecutorImpl(ExecutorService executorService) {
+        log.debug("init Thread Pool By " + executorService);
+        this.executorService = executorService;
+    }
+
+    @Override
+    public String toString() {
+        return "EventExecutorImpl{" +
+                "executorService=" + executorService +
+                '}';
+    }
 }
