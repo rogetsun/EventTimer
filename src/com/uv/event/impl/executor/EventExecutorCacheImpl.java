@@ -40,6 +40,7 @@ public class EventExecutorCacheImpl extends EventExecutorImpl {
                             @Override
                             public void run() {
                                 while (cache.size() > 0) {
+                                    log.debug("EventTaskQueue Thread deal queue cache, size="+cache.size());
                                     try {
                                         if (this.tmpMap == null) {
                                             this.tmpMap = cache.poll(1, TimeUnit.SECONDS);
