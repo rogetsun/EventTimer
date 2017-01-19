@@ -78,7 +78,7 @@ public class EventExecutorCacheImpl extends EventExecutorImpl {
         return "EventExecutorCacheImpl{" +
                 "ExecutorService=" + this.getExecutorService().toString() +
                 ", twice cache.size=" + cache.size() +
-                ", cacheSwitchThread.isAlive=" + cacheSwitchThread.isAlive() +
+                ", cacheSwitchThread.isAlive=" + (cacheSwitchThread == null ? "false" : cacheSwitchThread.isAlive()) +
                 '}';
     }
 
