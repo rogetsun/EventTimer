@@ -7,10 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.LinkedTransferQueue;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TransferQueue;
+import java.util.concurrent.*;
 
 /**
  * Created by uv2sun on 2017/1/19.
@@ -83,5 +80,21 @@ public class EventExecutorCacheImpl extends EventExecutorImpl {
                 ", twice cache.size=" + cache.size() +
                 ", cacheSwitchThread.isAlive=" + cacheSwitchThread.isAlive() +
                 '}';
+    }
+
+    public EventExecutorCacheImpl() {
+        super();
+    }
+
+    public EventExecutorCacheImpl(int threadPoolSize) {
+        super(threadPoolSize);
+    }
+
+    public EventExecutorCacheImpl(int corePoolSize, int maxPoolSize) {
+        super(corePoolSize, maxPoolSize);
+    }
+
+    public EventExecutorCacheImpl(ExecutorService executorService) {
+        super(executorService);
     }
 }
