@@ -23,13 +23,17 @@ public class EventEmitterImpl implements EventEmitter {
 
     /**
      * 下面两个map用于处理数据分发时
-     * eventSpliterMap不同事件名称的分发规则。
-     * eventExecutorMap根据分发规则确定每一路的执行器。执行器默认都是一个线程的ExecutorService
+     * eventSpliterMap<EventName, EventSpliter>
+     * 不同事件名称的分发规则接口。
+     * eventExecutorMap<eventName, Map<key, EventExecutor>> key为事件的分发规则接口实现split返回的key
+     * 根据分发规则确定某一个事件每一路key的执行器。执行器默认都是一个线程的ExecutorService
      */
     private Map<String, EventSpliter> eventSpliterMap = new HashMap<>();
     private Map<String, Map<Object, EventExecutor>> eventExecutorMap = new HashMap<>();
     /**
      * 事件每个分发通道的事件处理队列copy
+     * eventHandlerQueueMap<eventName, Map<key, EventHandlerQueue>>
+     * key为事件的分发规则接口实现split返回的key
      */
     private Map<String, Map<Object, EventHandlerQueue<Object>>> eventHandlerQueueMap = new HashMap<>();
 
