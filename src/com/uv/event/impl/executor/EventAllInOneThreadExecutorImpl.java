@@ -60,6 +60,11 @@ public class EventAllInOneThreadExecutorImpl implements EventExecutor {
         return this.executorService;
     }
 
+    @Override
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
     public EventAllInOneThreadExecutorImpl(String poolName) {
         /**
          * 初始化执行器线程池

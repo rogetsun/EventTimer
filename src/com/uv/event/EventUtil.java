@@ -91,16 +91,16 @@ public class EventUtil {
      * @param data
      */
     public static void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
-        if (eventEmitter == null) {
-            init();
-        }
+//        if (eventEmitter == null) {
+//            init();
+//        }
         eventEmitter.trigger(eventName, data);
     }
 
     public static void trigger(String eventName) throws RejectedExecutionException {
-        if (eventEmitter == null) {
-            init();
-        }
+//        if (eventEmitter == null) {
+//            init();
+//        }
         eventEmitter.trigger(eventName);
     }
 

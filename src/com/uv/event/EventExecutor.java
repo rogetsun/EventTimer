@@ -21,4 +21,6 @@ public interface EventExecutor {
 
     ExecutorService getExecutorService();
 
+    void setExecutorService(ExecutorService executorService);
+
 }

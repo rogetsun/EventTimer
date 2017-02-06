@@ -19,11 +19,11 @@ public class EventWatcher implements Runnable {
     @Override
     public void run() {
         if (!singletonFlag) {
-            log.debug("EventWatcher start...");
+            log.info("EventWatcher start...");
             singletonFlag = true;
             while (!isStop) {
 
-                log.debug(EventUtil.getEventQueueInfo());
+                log.info(EventUtil.getEventQueueInfo());
                 Map<String, EventHandlerQueue<Object>> ep = EventUtil.getEventPool();
                 Set<String> keySet = ep.keySet();
                 String[] keys = new String[keySet.size()];

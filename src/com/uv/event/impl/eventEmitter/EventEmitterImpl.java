@@ -152,7 +152,8 @@ public class EventEmitterImpl implements EventEmitter {
                 }
                 handlerQueueMap.put(key, queue);
             }
-            executorMap.get(key).exec(eventName, handlerQueueMap.get(key), data);
+            EventExecutor ee = executorMap.get(key);
+            ee.exec(eventName, handlerQueueMap.get(key), data);
         } else {
             this.eventExecutor.exec(eventName, this.getEventSequence(eventName), data);
         }
@@ -217,14 +218,14 @@ public class EventEmitterImpl implements EventEmitter {
 
     @Override
     public String toString() {
-        String info = this.getExecutor().toString();
+        String info = "\n" + this.getExecutor().toString();
         String[] eventNames = new String[this.splitedEventExecutorMap.size()];
         eventNames = this.splitedEventExecutorMap.keySet().toArray(eventNames);
         for (int i = 0; i < eventNames.length; i++) {
             Map<Object, EventExecutor> tm = this.splitedEventExecutorMap.get(eventNames[i]);
             Object[] keys = tm.keySet().toArray();
             for (int j = 0; j < keys.length; j++) {
-                info += "\n" + tm.get(keys[i]).toString();
+                info += "\n" + tm.get(keys[j]).toString();
             }
         }
         return info;

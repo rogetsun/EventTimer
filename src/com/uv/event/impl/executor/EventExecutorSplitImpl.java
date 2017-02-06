@@ -1,5 +1,8 @@
 package com.uv.event.impl.executor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -7,6 +10,7 @@ import java.util.concurrent.Executors;
  * Created by uv2sun on 2017/2/6.
  */
 public class EventExecutorSplitImpl extends EventExecutorImpl {
+    private static final Log log = LogFactory.getLog(EventExecutorSplitImpl.class);
     /**
      * 特定事件的执行器
      */
@@ -16,15 +20,11 @@ public class EventExecutorSplitImpl extends EventExecutorImpl {
      */
     private Object key;
 
-    /**
-     * 事件执行队列
-     */
-    private ExecutorService executorService;
-
     public EventExecutorSplitImpl(String eventName, Object key) {
-        this.executorService = Executors.newSingleThreadExecutor(new EventThreadFactory(eventName + "-Pool"));
+        super(Executors.newFixedThreadPool(1, new EventThreadFactory(eventName + "@" + key)));
         this.eventName = eventName;
         this.key = key;
+        log.debug("init " + eventName + "@" + key.toString() + " Thread Pool for 1 ok");
     }
 
     @Override
@@ -32,7 +32,7 @@ public class EventExecutorSplitImpl extends EventExecutorImpl {
         return "EventExecutorSplitImpl{" +
                 "eventName='" + eventName + '\'' +
                 ", key=" + key +
-                ", executorService=" + executorService +
+                ", executorService=" + this.getExecutorService().toString() +
                 '}';
     }
 }

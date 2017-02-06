@@ -6,25 +6,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Created by uv2sun on 15/11/10.
+ * Created by uv2sun on 2017/2/6.
  */
-public class MyEventHandler extends EventHandlerS {
+public class MyEventHandler3 extends EventHandlerS {
     private static Log log = LogFactory.getLog(MyEventHandler.class);
-
 
     @Override
     public void deal(String eventName, JSONObject data) {
-        log.debug(eventName + " trigger me MyEventHandler{" + getEventHandlerID() + "}");
+        log.debug(eventName + " trigger me MyEventHandler3{" + getEventHandlerID() + "}");
         data.accumulate("handler", "handler deal");
         log.debug(data);
-    }
-
-    public MyEventHandler(long id) {
-        super(id);
-    }
-
-    public MyEventHandler(long id, String desc) {
-
-        super(id, desc);
     }
 }

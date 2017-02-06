@@ -81,6 +81,11 @@ public class EventExecutorImpl implements EventExecutor {
         return this.executorService;
     }
 
+    @Override
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
 
     public EventExecutorImpl() {
         /**
@@ -117,7 +122,7 @@ public class EventExecutorImpl implements EventExecutor {
     @Override
     public String toString() {
         return "EventExecutorImpl{" +
-                "executorService=" + executorService +
+                "executorService=" + executorService.toString() +
                 '}';
     }
 }
