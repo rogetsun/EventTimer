@@ -1,12 +1,14 @@
 package com.uv.event.impl.eventEmitter;
 
 import com.uv.event.*;
+import com.uv.event.impl.executor.EventExecutorSplitImpl;
 import com.uv.event.impl.queue.EventHandlerQueueImpl;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -18,6 +20,18 @@ public class EventEmitterImpl implements EventEmitter {
     private Map<String, EventHandlerQueue<Object>> eventPool;
     private EventExecutor eventExecutor;
     private static Log log = LogFactory.getLog(EventEmitterImpl.class);
+
+    /**
+     * 下面两个map用于处理数据分发时
+     * eventSpliterMap不同事件名称的分发规则。
+     * eventExecutorMap根据分发规则确定每一路的执行器。执行器默认都是一个线程的ExecutorService
+     */
+    private Map<String, EventSpliter> eventSpliterMap = new HashMap<>();
+    private Map<String, Map<Object, EventExecutor>> eventExecutorMap = new HashMap<>();
+    /**
+     * 事件每个分发通道的事件处理队列copy
+     */
+    private Map<String, Map<Object, EventHandlerQueue<Object>>> eventHandlerQueueMap = new HashMap<>();
 
     @Override
     public void on(String eventName, EventHandler eventHandler) {
@@ -58,6 +72,11 @@ public class EventEmitterImpl implements EventEmitter {
         log.debug("eventPool.keySet:" + eventPool.keySet());
     }
 
+    @Override
+    public void setEventSpliter(String eventName, EventSpliter eventSpliter) {
+        this.eventSpliterMap.put(eventName, eventSpliter);
+    }
+
 
     @Override
     public void remove(String eventName) {
@@ -88,7 +107,45 @@ public class EventEmitterImpl implements EventEmitter {
 
     @Override
     public void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
-        this.eventExecutor.exec(eventName, this.getEventSequence(eventName), data);
+        if (this.eventSpliterMap.containsKey(eventName)) {
+            //计算分发key值
+            Object key = this.eventSpliterMap.get(eventName).split(data);
+            //处理分发key对应执行器
+            if (!this.eventExecutorMap.containsKey(eventName)) {
+                this.eventExecutorMap.put(eventName, new HashMap<Object, EventExecutor>());
+            }
+            Map<Object, EventExecutor> executorMap = this.eventExecutorMap.get(eventName);
+            if (!executorMap.containsKey(key)) {
+                executorMap.put(key, new EventExecutorSplitImpl(eventName, key));
+            }
+
+            //处理分发key对应的时间处理器队列copy
+            if (!this.eventHandlerQueueMap.containsKey(eventName)) {
+                this.eventHandlerQueueMap.put(eventName, new HashMap<Object, EventHandlerQueue<Object>>());
+            }
+            Map<Object, EventHandlerQueue<Object>> handlerQueueMap = this.eventHandlerQueueMap.get(eventName);
+            if (!handlerQueueMap.containsKey(key)
+                    || handlerQueueMap.get(key).size() != this.getEventSequence(eventName).size()) {
+                EventHandlerQueue<Object> queue = new EventHandlerQueueImpl<>();
+                //事件队列copy
+                for (Iterator it = this.getEventSequence(eventName).iterator(); it.hasNext(); ) {
+                    Object o = it.next();
+                    if (o instanceof Class) {
+                        queue.add(o);
+                    } else {
+                        try {
+                            queue.add(o.getClass().newInstance());
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            log.error("事件队列copy失败，[" + o + "]", e);
+                        }
+                    }
+                }
+                handlerQueueMap.put(key, queue);
+            }
+            executorMap.get(key).exec(eventName, handlerQueueMap.get(key), data);
+        } else {
+            this.eventExecutor.exec(eventName, this.getEventSequence(eventName), data);
+        }
         /**
          * 如果此事件名称对应的处理器列表已经为空,则删除此事件
          */

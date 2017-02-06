@@ -20,6 +20,15 @@ public interface EventEmitter {
 
     void on(String eventName, Class<? extends EventHandler> eventHandlerClass);
 
+
+    /**
+     * 设置指定事件的分发处理规则
+     *
+     * @param eventName
+     * @param eventSpliter
+     */
+    void setEventSpliter(String eventName, EventSpliter eventSpliter);
+
     /**
      * 移除事件全部处理器
      *
