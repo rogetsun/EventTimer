@@ -30,8 +30,8 @@ public class EventExecutorSplitImpl extends EventExecutorImpl {
     @Override
     public String toString() {
         return "EventExecutorSplitImpl{" +
-                "eventName='" + eventName + '\'' +
-                ", key=" + key +
+                "" + eventName +
+                "@" + key +
                 ", executorService=" + this.getExecutorService().toString() +
                 '}';
     }
