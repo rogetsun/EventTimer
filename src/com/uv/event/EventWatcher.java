@@ -23,7 +23,7 @@ public class EventWatcher implements Runnable {
             singletonFlag = true;
             while (!isStop) {
 
-                log.debug(EventUtil.getExecutorService());
+                log.debug(EventUtil.getEventQueueInfo());
                 Map<String, EventHandlerQueue<Object>> ep = EventUtil.getEventPool();
                 Set<String> keySet = ep.keySet();
                 String[] keys = new String[keySet.size()];

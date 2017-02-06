@@ -17,25 +17,31 @@ import java.util.concurrent.RejectedExecutionException;
  * 事件容器
  */
 public class EventEmitterImpl implements EventEmitter {
-    private Map<String, EventHandlerQueue<Object>> eventPool;
-    private EventExecutor eventExecutor;
     private static Log log = LogFactory.getLog(EventEmitterImpl.class);
+    /**
+     * 事件池
+     */
+    private Map<String, EventHandlerQueue<Object>> eventPool;
+    /**
+     * 事件默认执行器
+     */
+    private EventExecutor eventExecutor;
 
     /**
      * 下面两个map用于处理数据分发时
      * eventSpliterMap<EventName, EventSpliter>
      * 不同事件名称的分发规则接口。
-     * eventExecutorMap<eventName, Map<key, EventExecutor>> key为事件的分发规则接口实现split返回的key
-     * 根据分发规则确定某一个事件每一路key的执行器。执行器默认都是一个线程的ExecutorService
+     * splitedEventExecutorMap<eventName, Map<key, EventExecutor>> key为事件的分发规则接口实现split返回的key
+     * 根据分发规则确定某一个事件每一路key的执行器。执行器默认都是一个线程的ExecutorService，实现为EventExecutorSplitImpl
      */
     private Map<String, EventSpliter> eventSpliterMap = new HashMap<>();
-    private Map<String, Map<Object, EventExecutor>> eventExecutorMap = new HashMap<>();
+    private Map<String, Map<Object, EventExecutor>> splitedEventExecutorMap = new HashMap<>();
     /**
      * 事件每个分发通道的事件处理队列copy
-     * eventHandlerQueueMap<eventName, Map<key, EventHandlerQueue>>
+     * splitedEventHandlerQueueMap<eventName, Map<key, EventHandlerQueue>>
      * key为事件的分发规则接口实现split返回的key
      */
-    private Map<String, Map<Object, EventHandlerQueue<Object>>> eventHandlerQueueMap = new HashMap<>();
+    private Map<String, Map<Object, EventHandlerQueue<Object>>> splitedEventHandlerQueueMap = new HashMap<>();
 
     @Override
     public void on(String eventName, EventHandler eventHandler) {
@@ -115,19 +121,19 @@ public class EventEmitterImpl implements EventEmitter {
             //计算分发key值
             Object key = this.eventSpliterMap.get(eventName).split(data);
             //处理分发key对应执行器
-            if (!this.eventExecutorMap.containsKey(eventName)) {
-                this.eventExecutorMap.put(eventName, new HashMap<Object, EventExecutor>());
+            if (!this.splitedEventExecutorMap.containsKey(eventName)) {
+                this.splitedEventExecutorMap.put(eventName, new HashMap<Object, EventExecutor>());
             }
-            Map<Object, EventExecutor> executorMap = this.eventExecutorMap.get(eventName);
+            Map<Object, EventExecutor> executorMap = this.splitedEventExecutorMap.get(eventName);
             if (!executorMap.containsKey(key)) {
                 executorMap.put(key, new EventExecutorSplitImpl(eventName, key));
             }
 
             //处理分发key对应的时间处理器队列copy
-            if (!this.eventHandlerQueueMap.containsKey(eventName)) {
-                this.eventHandlerQueueMap.put(eventName, new HashMap<Object, EventHandlerQueue<Object>>());
+            if (!this.splitedEventHandlerQueueMap.containsKey(eventName)) {
+                this.splitedEventHandlerQueueMap.put(eventName, new HashMap<Object, EventHandlerQueue<Object>>());
             }
-            Map<Object, EventHandlerQueue<Object>> handlerQueueMap = this.eventHandlerQueueMap.get(eventName);
+            Map<Object, EventHandlerQueue<Object>> handlerQueueMap = this.splitedEventHandlerQueueMap.get(eventName);
             if (!handlerQueueMap.containsKey(key)
                     || handlerQueueMap.get(key).size() != this.getEventSequence(eventName).size()) {
                 EventHandlerQueue<Object> queue = new EventHandlerQueueImpl<>();
@@ -207,5 +213,20 @@ public class EventEmitterImpl implements EventEmitter {
             list.add(ehOrClass);
             this.eventPool.put(eventName, list);
         }
+    }
+
+    @Override
+    public String toString() {
+        String info = this.getExecutor().toString();
+        String[] eventNames = new String[this.splitedEventExecutorMap.size()];
+        eventNames = this.splitedEventExecutorMap.keySet().toArray(eventNames);
+        for (int i = 0; i < eventNames.length; i++) {
+            Map<Object, EventExecutor> tm = this.splitedEventExecutorMap.get(eventNames[i]);
+            Object[] keys = tm.keySet().toArray();
+            for (int j = 0; j < keys.length; j++) {
+                info += "\n" + tm.get(keys[i]).toString();
+            }
+        }
+        return info;
     }
 }

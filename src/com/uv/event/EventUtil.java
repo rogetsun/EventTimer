@@ -46,6 +46,13 @@ public class EventUtil {
     }
 
 
+    public static void setEventSpliter(String eventName, EventSpliter eventSpliter) {
+        if (eventEmitter == null) {
+            init();
+        }
+        eventEmitter.setEventSpliter(eventName, eventSpliter);
+    }
+
     public static void on(String eventName, EventHandler eventHandler) {
         if (eventEmitter == null) {
             init();
@@ -84,10 +91,16 @@ public class EventUtil {
      * @param data
      */
     public static void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
+        if (eventEmitter == null) {
+            init();
+        }
         eventEmitter.trigger(eventName, data);
     }
 
     public static void trigger(String eventName) throws RejectedExecutionException {
+        if (eventEmitter == null) {
+            init();
+        }
         eventEmitter.trigger(eventName);
     }
 
@@ -97,7 +110,7 @@ public class EventUtil {
     }
 
     public static String getEventQueueInfo() {
-        return eventEmitter.getExecutor().toString();
+        return eventEmitter.toString();
     }
 
     public static Map<String, EventHandlerQueue<Object>> getEventPool() {
