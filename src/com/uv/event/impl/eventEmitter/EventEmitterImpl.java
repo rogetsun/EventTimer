@@ -218,7 +218,7 @@ public class EventEmitterImpl implements EventEmitter {
 
     @Override
     public String toString() {
-        String info = "\n*******************EventQueueInfo**********************" + this.getExecutor().toString();
+        String info = "\n*******************EventQueueInfo**********************\n" + this.getExecutor().toString();
         String[] eventNames = new String[this.splitedEventExecutorMap.size()];
         eventNames = this.splitedEventExecutorMap.keySet().toArray(eventNames);
         for (int i = 0; i < eventNames.length; i++) {
