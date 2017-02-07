@@ -68,10 +68,11 @@ public class EventExecutorImpl implements EventExecutor {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e2) {
-                        e2.printStackTrace();
+//                        e2.printStackTrace();
                     }
                 }
             }
+
             if (!ok) throw e;
         }
     }
