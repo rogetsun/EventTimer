@@ -16,3 +16,9 @@ Event使用:
     所以直接用EventUtil.on(EventName, EventHandlerS)即可.
     在触发事件时用EventUtil.trigger(EventName).
 
+
+20170222：
+    增加trigger事件时，如果当前事件在on时，增加了分发器EventSpliter，
+    则根据分发规则生成的key生成或使用已有的单独创建的EventExecutorSplitImpl（底层就是一个单独的ExecutorService）。
+
+
