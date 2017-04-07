@@ -31,3 +31,7 @@ Event使用:
         EventUtil.forwardOnce(String:eventName, forwarder:EventOnceForwarder)
         EventOnceForwarder为一个函数式接口
         下次eventName再被触发时，将经过函数式接口EventOnceForwarder.forward()转换触发到返回的结果事件名上。
+        eg:
+        EventUtil.forwardOnce("IP62", (sourceEventName, data)->{
+            //todo return distEventName
+        });
