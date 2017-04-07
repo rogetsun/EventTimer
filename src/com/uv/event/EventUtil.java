@@ -15,6 +15,7 @@ public class EventUtil {
     private static EventEmitter eventEmitter;
     public static String EventContainerName = "ECN";
     public static int taskRejectCount = 100;
+    public static final String EVENT_SEP = "@";
 
     public static void init(int threadPoolSize) {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(threadPoolSize));
@@ -115,5 +116,9 @@ public class EventUtil {
 
     public static Map<String, EventHandlerQueue<Object>> getEventPool() {
         return eventEmitter.getEventPool();
+    }
+
+    public static void forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
+        eventEmitter.forwardOnce(eventName, eventOnceForwarder);
     }
 }

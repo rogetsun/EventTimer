@@ -59,4 +59,14 @@ public interface EventEmitter {
     EventExecutor getExecutor();
 
     Map<String, EventHandlerQueue<Object>> getEventPool();
+
+    /**
+     * 增加对某一个事件下一次触发时的事件转发器。转发一次后将失效。
+     *
+     * @param eventName
+     * @param eventOnceForwarder
+     */
+    void forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder);
+
+
 }
