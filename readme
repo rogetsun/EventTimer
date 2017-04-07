@@ -21,4 +21,13 @@ Event使用:
     增加trigger事件时，如果当前事件在on时，增加了分发器EventSpliter，
     则根据分发规则生成的key生成或使用已有的单独创建的EventExecutorSplitImpl（底层就是一个单独的ExecutorService）。
 
-
+20170407：
+    1、增加事件分级功能。从事件名称上实现。
+        比如事件名称："一级事件名@二级事件名@三级事件名"
+        trigger事件时：
+            如果有"一级事件名@二级事件名@三级事件名"的EventHandler则直接触发，并不再向上广播。
+            如果没有则看是否有"一级事件名@二级事件名"的EventHandler。依次类推。
+    2、增加事件一次性转发功能：forwardOnce。
+        EventUtil.forwardOnce(String:eventName, forwarder:EventOnceForwarder)
+        EventOnceForwarder为一个函数式接口
+        下次eventName再被触发时，将经过函数式接口EventOnceForwarder.forward()转换触发到返回的结果事件名上。
