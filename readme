@@ -35,3 +35,9 @@ Event使用:
         EventUtil.forwardOnce("IP62", (sourceEventName, data)->{
             //todo return distEventName
         });
+
+20170714:
+    1、增加事件拦截转发功能的取消功能。
+        将EventUtil.forwardOnce()返回一个事件拦截转发器Forwarder。自带取消方法cancel();
+        或者通过EventUtil.cancelForward(String:eventName)
+        返回是否成功取消。不成功的原因只有已经不存在该事件的拦截转发器。
