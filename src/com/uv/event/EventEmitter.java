@@ -90,7 +90,7 @@ public interface EventEmitter {
      * 取消对某一事件上的所有事件拦截转发器
      *
      * @param eventName
-     * @return
+     * @return true:移除成功；false:事件拦截转发器已不存在
      */
     boolean cancelForward(String eventName);
 
