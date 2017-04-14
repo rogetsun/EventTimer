@@ -1,7 +1,6 @@
 package com.uv.event.impl.eventEmitter;
 
 import com.uv.event.*;
-import com.uv.event.impl.EventHandlerN;
 import com.uv.event.impl.executor.EventExecutorSplitImpl;
 import com.uv.event.impl.queue.EventHandlerQueueImpl;
 import net.sf.json.JSONObject;
@@ -251,8 +250,9 @@ public class EventEmitterImpl implements EventEmitter {
 
 
     @Override
-    public void forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
+    public Forwarder forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
         this.forwarderMap.put(eventName, eventOnceForwarder);
+        return () -> eventName;
     }
 
     @Override

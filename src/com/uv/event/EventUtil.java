@@ -118,8 +118,8 @@ public class EventUtil {
         return eventEmitter.getEventPool();
     }
 
-    public static void forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
-        eventEmitter.forwardOnce(eventName, eventOnceForwarder);
+    public static Forwarder forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
+        return eventEmitter.forwardOnce(eventName, eventOnceForwarder);
     }
 
     public static boolean cancelForward(String eventName) {
