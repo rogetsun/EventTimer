@@ -4,6 +4,7 @@ import net.sf.json.JSONObject;
 
 /**
  * Created by uv2sun on 2017/2/6.
+ * 事件分发器。
  */
 public interface EventSpliter {
     /**
