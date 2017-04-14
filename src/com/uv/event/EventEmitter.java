@@ -61,12 +61,37 @@ public interface EventEmitter {
     Map<String, EventHandlerQueue<Object>> getEventPool();
 
     /**
+     * 返回是否存在指定事件名称的EventHandler
+     *
+     * @param eventName
+     * @return
+     */
+    boolean containEventHandler(String eventName);
+
+    /**
+     * 返回是否存在指定事件名称的事件拦截转发器
+     *
+     * @param eventName
+     * @return
+     */
+    boolean containEventForwarder(String eventName);
+
+    /**
      * 增加对某一个事件下一次触发时的事件转发器。转发一次后将失效。
      *
      * @param eventName
      * @param eventOnceForwarder
+     * @return 事件拦截转发器
      */
-    void forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder);
+    Forwarder forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder);
 
+
+    /**
+     * 取消对某一事件上的所有事件拦截转发器
+     *
+     * @param eventName
+     * @return
+     */
+    boolean cancelForward(String eventName);
 
 }

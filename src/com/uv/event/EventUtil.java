@@ -121,4 +121,16 @@ public class EventUtil {
     public static void forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
         eventEmitter.forwardOnce(eventName, eventOnceForwarder);
     }
+
+    public static boolean cancelForward(String eventName) {
+        return eventEmitter.cancelForward(eventName);
+    }
+
+    public static boolean containEventHandler(String eventName) {
+        return eventEmitter.containEventHandler(eventName);
+    }
+
+    public static boolean containEventForwarder(String eventName) {
+        return eventEmitter.containEventForwarder(eventName);
+    }
 }

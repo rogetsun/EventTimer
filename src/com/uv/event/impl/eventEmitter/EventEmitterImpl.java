@@ -44,6 +44,7 @@ public class EventEmitterImpl implements EventEmitter {
      */
     private Map<String, Map<Object, EventHandlerQueue<Object>>> splitedEventHandlerQueueMap = new HashMap<>();
 
+
     /**
      * 事件一次性转发map
      * Map<String:事件名称, EventOnceForwarder:事件转发器>
@@ -51,7 +52,6 @@ public class EventEmitterImpl implements EventEmitter {
     private Map<String, EventOnceForwarder> forwarderMap = new HashMap<>();
 
     @Override
-
     public void on(String eventName, EventHandler eventHandler) {
         log.debug("on [" + eventName + "]EventHandlerID:" + eventHandler.getEventHandlerID());
         if (eventName != null && eventName.length() > 0 && eventHandler != null) {
@@ -240,10 +240,29 @@ public class EventEmitterImpl implements EventEmitter {
     }
 
     @Override
+    public boolean containEventHandler(String eventName) {
+        return this.getEventPool().containsKey(eventName) && this.getEventSequence(eventName).size() > 0;
+    }
+
+    @Override
+    public boolean containEventForwarder(String eventName) {
+        return this.getForwarderMap().containsKey(eventName);
+    }
+
+
+    @Override
     public void forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
         this.forwarderMap.put(eventName, eventOnceForwarder);
     }
 
+    @Override
+    public boolean cancelForward(String eventName) {
+        if (this.containEventForwarder(eventName)) {
+            this.getForwarderMap().remove(eventName);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 从事件池提取对应时间名称的事件容器(列表)
@@ -295,6 +314,10 @@ public class EventEmitterImpl implements EventEmitter {
         }
         info += "\n*******************EventQueueInfo**********************";
         return info;
+    }
+
+    public Map<String, EventOnceForwarder> getForwarderMap() {
+        return forwarderMap;
     }
 
     public static void main(String[] args) {
