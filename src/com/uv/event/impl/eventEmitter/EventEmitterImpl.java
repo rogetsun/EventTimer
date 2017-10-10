@@ -116,6 +116,23 @@ public class EventEmitterImpl implements EventEmitter {
         }
     }
 
+    @Override
+    public void remove(String eventName, EventHandler eventHandler) {
+        System.out.println("remove " + eventName + ":" + eventHandler.getEventHandlerID());
+        EventHandlerQueue queue = getEventSequence(eventName);
+        if (queue != null && queue.size() > 0) {
+            queue.remove(eventHandler);
+        }
+    }
+
+    @Override
+    public void remove(String eventName, Class<EventHandler> eventHandlerClass) {
+        System.out.println("remove " + eventName + ":" + eventHandlerClass);
+        EventHandlerQueue queue = getEventSequence(eventName);
+        if (queue != null && queue.size() > 0) {
+            queue.remove(eventHandlerClass);
+        }
+    }
 
 //    @Override
 //    public void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
@@ -159,24 +176,6 @@ public class EventEmitterImpl implements EventEmitter {
 //            }
 //        }
 //    }
-
-    @Override
-    public void remove(String eventName, EventHandler eventHandler) {
-        System.out.println("remove " + eventName + ":" + eventHandler.getEventHandlerID());
-        EventHandlerQueue queue = getEventSequence(eventName);
-        if (queue != null && queue.size() > 0) {
-            queue.remove(eventHandler);
-        }
-    }
-
-    @Override
-    public void remove(String eventName, Class<EventHandler> eventHandlerClass) {
-        System.out.println("remove " + eventName + ":" + eventHandlerClass);
-        EventHandlerQueue queue = getEventSequence(eventName);
-        if (queue != null && queue.size() > 0) {
-            queue.remove(eventHandlerClass);
-        }
-    }
 
     @Override
     public void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
