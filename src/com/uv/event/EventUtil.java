@@ -2,6 +2,7 @@ package com.uv.event;
 
 import com.uv.event.impl.executor.EventAllInOneThreadExecutorImpl;
 import com.uv.event.impl.executor.EventExecutorImpl;
+import com.uv.timer.TimerUtil;
 import net.sf.json.JSONObject;
 
 import java.util.Map;
@@ -16,6 +17,10 @@ public class EventUtil {
     public static String EventContainerName = "ECN";
     public static int taskRejectCount = 100;
     public static final String EVENT_SEP = "@";
+
+    public static final String EVENT_PROPAGATION_SEQ = "|";
+
+    public static final String EVENT_NO_PROPAGATION_SEQ = "@";
 
     public static void init(int threadPoolSize) {
         eventEmitter = EventEmitterFactory.getEventEmitter(new EventExecutorImpl(threadPoolSize));
@@ -132,5 +137,10 @@ public class EventUtil {
 
     public static boolean containEventForwarder(String eventName) {
         return eventEmitter.containEventForwarder(eventName);
+    }
+
+    public static void shutdown() {
+        eventEmitter.shutdown();
+        TimerUtil.shutdown();
     }
 }

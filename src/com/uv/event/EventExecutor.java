@@ -23,4 +23,5 @@ public interface EventExecutor {
 
     void setExecutorService(ExecutorService executorService);
 
+    void shutdown();
 }

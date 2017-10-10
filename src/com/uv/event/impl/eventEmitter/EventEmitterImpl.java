@@ -50,6 +50,20 @@ public class EventEmitterImpl implements EventEmitter {
      */
     private Map<String, EventOnceForwarder> forwarderMap = new HashMap<>();
 
+    public EventEmitterImpl(EventExecutor eventExecutor) {
+        this.eventPool = new HashMap<>();
+        this.eventExecutor = eventExecutor;
+    }
+
+    public static void main(String[] args) {
+        String a = "123";
+        String b = a;
+        String c = b.substring(1, 2);
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+    }
+
     @Override
     public void on(String eventName, EventHandler eventHandler) {
         log.debug("on [" + eventName + "]EventHandlerID:" + eventHandler.getEventHandlerID());
@@ -94,7 +108,6 @@ public class EventEmitterImpl implements EventEmitter {
         this.eventSpliterMap.put(eventName, eventSpliter);
     }
 
-
     @Override
     public void remove(String eventName) {
         System.out.println("remove all " + eventName);
@@ -102,6 +115,50 @@ public class EventEmitterImpl implements EventEmitter {
             this.eventPool.remove(eventName);
         }
     }
+
+
+//    @Override
+//    public void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
+//        if (eventName == null) return;
+//
+//        //todo 做事件分级
+//        String tmpEventName = eventName;
+//        while (true) {
+//
+//            //判断当前事件是否需要转发
+//            if (this.forwarderMap.containsKey(tmpEventName)) {
+//                EventOnceForwarder forwarder = this.forwarderMap.get(tmpEventName);
+//                this.forwarderMap.remove(tmpEventName);
+//                if (forwarder != null) {
+//                    String forwardEventName = forwarder.forward(tmpEventName, data);
+//                    if (null != forwardEventName && forwardEventName.length() > 0) {
+//                        this.trigger(forwardEventName, data);
+//                        return;
+//                    }
+//                }
+//            }
+//
+//            if (this.eventSpliterMap.containsKey(tmpEventName)) {//事件是否需要分发
+//                this.splitTrigger(tmpEventName, data);
+//                return;
+//            } else if (this.getEventPool().containsKey(tmpEventName)) {//正常触发
+//                this.exec(this.eventExecutor, tmpEventName, this.getEventSequence(tmpEventName), data);
+//                return;
+//            }
+//            /**
+//             * 如果此事件名称对应的处理器列表已经为空,则删除此事件
+//             */
+////        if (this.getEventSequence(eventName).size() == 0) {
+////            this.remove(eventName);
+////        }
+//            int idx = tmpEventName.lastIndexOf(EventUtil.EVENT_SEP);
+//            if (idx > -1) {
+//                tmpEventName = tmpEventName.substring(0, idx);
+//            } else {
+//                break;
+//            }
+//        }
+//    }
 
     @Override
     public void remove(String eventName, EventHandler eventHandler) {
@@ -121,47 +178,62 @@ public class EventEmitterImpl implements EventEmitter {
         }
     }
 
-
     @Override
     public void trigger(String eventName, JSONObject data) throws RejectedExecutionException {
-        if (eventName == null) return;
+        if (eventName != null) {
+            String tmpEventName = eventName;
 
-        //todo 做事件分级
-        String tmpEventName = eventName;
-        while (true) {
-
-            //判断当前事件是否需要转发
-            if (this.forwarderMap.containsKey(tmpEventName)) {
-                EventOnceForwarder forwarder = this.forwarderMap.get(tmpEventName);
-                this.forwarderMap.remove(tmpEventName);
-                if (forwarder != null) {
-                    String forwardEventName = forwarder.forward(tmpEventName, data);
-                    if (null != forwardEventName && forwardEventName.length() > 0) {
-                        this.trigger(forwardEventName, data);
-                        return;
+            while (true) {
+                boolean isTrigger = false;
+                if (this.forwarderMap.containsKey(tmpEventName)) {
+                    EventOnceForwarder forwarder = (EventOnceForwarder) this.forwarderMap.get(tmpEventName);
+                    this.forwarderMap.remove(tmpEventName);
+                    if (forwarder != null) {
+                        String forwardEventName = forwarder.forward(tmpEventName, data);
+                        if (null != forwardEventName && forwardEventName.length() > 0) {
+                            this.trigger(forwardEventName, data);
+                            isTrigger = true;
+                        }
                     }
+                }
+
+                if (!isTrigger) {
+                    if (this.eventSpliterMap.containsKey(tmpEventName)) {
+                        this.splitTrigger(tmpEventName, data);
+                        isTrigger = true;
+                    } else if (this.getEventPool().containsKey(tmpEventName)) {
+                        this.exec(this.eventExecutor, tmpEventName, this.getEventSequence(tmpEventName), data);
+                        isTrigger = true;
+                    }
+                }
+
+                int pIdx = tmpEventName.lastIndexOf(EventUtil.EVENT_PROPAGATION_SEQ);
+                int npIdx = tmpEventName.lastIndexOf(EventUtil.EVENT_NO_PROPAGATION_SEQ);
+                if (pIdx <= -1 && npIdx <= -1) {
+                    break;
+                }
+
+                if (pIdx > -1 && npIdx > -1) {
+                    if (npIdx > pIdx) {
+                        if (isTrigger) {
+                            break;
+                        }
+
+                        tmpEventName = tmpEventName.substring(0, npIdx);
+                    } else {
+                        tmpEventName = tmpEventName.substring(0, pIdx);
+                    }
+                } else if (pIdx > 0) {
+                    tmpEventName = tmpEventName.substring(0, pIdx);
+                } else if (npIdx > 0) {
+                    if (isTrigger) {
+                        break;
+                    }
+
+                    tmpEventName = tmpEventName.substring(0, npIdx);
                 }
             }
 
-            if (this.eventSpliterMap.containsKey(tmpEventName)) {//事件是否需要分发
-                this.splitTrigger(tmpEventName, data);
-                return;
-            } else if (this.getEventPool().containsKey(tmpEventName)) {//正常触发
-                this.exec(this.eventExecutor, tmpEventName, this.getEventSequence(tmpEventName), data);
-                return;
-            }
-            /**
-             * 如果此事件名称对应的处理器列表已经为空,则删除此事件
-             */
-//        if (this.getEventSequence(eventName).size() == 0) {
-//            this.remove(eventName);
-//        }
-            int idx = tmpEventName.lastIndexOf(EventUtil.EVENT_SEP);
-            if (idx > -1) {
-                tmpEventName = tmpEventName.substring(0, idx);
-            } else {
-                break;
-            }
         }
     }
 
@@ -248,7 +320,6 @@ public class EventEmitterImpl implements EventEmitter {
         return this.getForwarderMap().containsKey(eventName);
     }
 
-
     @Override
     public Forwarder forwardOnce(String eventName, EventOnceForwarder eventOnceForwarder) {
         this.forwarderMap.put(eventName, eventOnceForwarder);
@@ -264,6 +335,12 @@ public class EventEmitterImpl implements EventEmitter {
         return false;
     }
 
+    @Override
+    public void shutdown() {
+        this.eventExecutor.shutdown();
+        this.splitedEventExecutorMap.forEach((key, map) -> map.forEach((k, executor) -> executor.shutdown()));
+    }
+
     /**
      * 从事件池提取对应时间名称的事件容器(列表)
      *
@@ -272,11 +349,6 @@ public class EventEmitterImpl implements EventEmitter {
      */
     public EventHandlerQueue getEventSequence(String eventName) {
         return this.eventPool.get(eventName);
-    }
-
-    public EventEmitterImpl(EventExecutor eventExecutor) {
-        this.eventPool = new HashMap<>();
-        this.eventExecutor = eventExecutor;
     }
 
     /**
@@ -318,14 +390,5 @@ public class EventEmitterImpl implements EventEmitter {
 
     public Map<String, EventOnceForwarder> getForwarderMap() {
         return forwarderMap;
-    }
-
-    public static void main(String[] args) {
-        String a = "123";
-        String b = a;
-        String c = b.substring(1, 2);
-        System.out.println(a);
-        System.out.println(b);
-        System.out.println(c);
     }
 }

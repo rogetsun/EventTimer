@@ -94,4 +94,5 @@ public interface EventEmitter {
      */
     boolean cancelForward(String eventName);
 
+    void shutdown();
 }

@@ -74,4 +74,8 @@ public class TimerUtil {
     public static ScheduledExecutorService getScheduledExecutorService() {
         return scheduledExecutorService;
     }
+
+    public static void shutdown() {
+        scheduledExecutorService.shutdown();
+    }
 }

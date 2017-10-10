@@ -1,6 +1,9 @@
 package com.uv.event.impl.executor;
 
-import com.uv.event.*;
+import com.uv.event.EventExecutor;
+import com.uv.event.EventHandler;
+import com.uv.event.EventHandlerQueue;
+import com.uv.event.EventUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +17,35 @@ import java.util.concurrent.*;
 public class EventAllInOneThreadExecutorImpl implements EventExecutor {
     private static final Log logger = LogFactory.getLog(EventAllInOneThreadExecutorImpl.class);
     private ExecutorService executorService;
+
+    public EventAllInOneThreadExecutorImpl(String poolName) {
+        /**
+         * 初始化执行器线程池
+         */
+        logger.debug("init Thread Pool for processor count:" + Runtime.getRuntime().availableProcessors());
+        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new EventThreadFactory(poolName));
+//        this.executorService = Executors.newCachedThreadPool();
+    }
+
+    public EventAllInOneThreadExecutorImpl(String poolName, int threadPoolSize) {
+        /**
+         * 初始化执行器线程池
+         */
+        logger.debug("init Thread Pool for size:" + threadPoolSize);
+        this.executorService = Executors.newFixedThreadPool(threadPoolSize, new EventThreadFactory(poolName));
+    }
+
+    public EventAllInOneThreadExecutorImpl(String poolName, int corePoolSize, int maxPoolSize) {
+        logger.debug("init Thread Pool for size:" + corePoolSize + "/" + maxPoolSize);
+        this.executorService = new ThreadPoolExecutor(
+                corePoolSize,
+                maxPoolSize,
+                30,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>(5000),
+                new EventThreadFactory(poolName)
+        );
+    }
 
     @Override
     public void exec(String eventName, EventHandlerQueue list, JSONObject data) {
@@ -65,32 +97,8 @@ public class EventAllInOneThreadExecutorImpl implements EventExecutor {
         this.executorService = executorService;
     }
 
-    public EventAllInOneThreadExecutorImpl(String poolName) {
-        /**
-         * 初始化执行器线程池
-         */
-        logger.debug("init Thread Pool for processor count:" + Runtime.getRuntime().availableProcessors());
-        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new EventThreadFactory(poolName));
-//        this.executorService = Executors.newCachedThreadPool();
-    }
-
-    public EventAllInOneThreadExecutorImpl(String poolName, int threadPoolSize) {
-        /**
-         * 初始化执行器线程池
-         */
-        logger.debug("init Thread Pool for size:" + threadPoolSize);
-        this.executorService = Executors.newFixedThreadPool(threadPoolSize, new EventThreadFactory(poolName));
-    }
-
-    public EventAllInOneThreadExecutorImpl(String poolName, int corePoolSize, int maxPoolSize) {
-        logger.debug("init Thread Pool for size:" + corePoolSize + "/" + maxPoolSize);
-        this.executorService = new ThreadPoolExecutor(
-                corePoolSize,
-                maxPoolSize,
-                30,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(5000),
-                new EventThreadFactory(poolName)
-        );
+    @Override
+    public void shutdown() {
+        this.executorService.shutdown();
     }
 }
