@@ -13,7 +13,7 @@ import java.util.concurrent.*;
 
 /**
  * Created by uv2sun on 16/9/30.
- * 一个线程执行事件的所有EventHandler
+ * 一个线程执行事件的所有EventHandler.
  */
 public class EventAllInOneThreadExecutorImpl implements EventExecutor {
     private static final Log logger = LogFactory.getLog(EventAllInOneThreadExecutorImpl.class);
