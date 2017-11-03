@@ -79,14 +79,26 @@ public class EventUtil {
      * @param eventName
      */
     public static void remove(String eventName) {
+        String className = Thread.currentThread().getStackTrace()[2].getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+        System.out.println(className + "." + methodName + ":" + lineNumber + " call remove event:" + eventName);
         eventEmitter.remove(eventName);
     }
 
     public static void remove(String eventName, EventHandler eventHandler) {
+        String className = Thread.currentThread().getStackTrace()[2].getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+        System.out.println(className + "." + methodName + ":" + lineNumber + " call remove event:" + eventName + ", eventHandler:" + eventHandler);
         eventEmitter.remove(eventName, eventHandler);
     }
 
     public static void remove(String eventName, Class<EventHandler> eventHandlerClass) {
+        String className = Thread.currentThread().getStackTrace()[2].getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+        System.out.println(className + "." + methodName + ":" + lineNumber + " call remove event:" + eventName + ", eventHandler.class:" + eventHandlerClass.getName());
         eventEmitter.remove(eventName, eventHandlerClass);
     }
 
